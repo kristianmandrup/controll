@@ -3,6 +3,13 @@ require 'controll/messaging'
 module Controll
   module Helper
     include Controll::Messaging
+    extend Imperator::Command::MethodFactory
+
+    include ActiveSupport::Concern
+
+    included do
+      commands.each {|command| command_method command} if commands && commands.kind_of?(Array)
+    end
 
     def do_redirect path
       notify!
