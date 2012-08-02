@@ -7,8 +7,10 @@ module Controll
 
     include ActiveSupport::Concern
 
-    included do
-      commands.each {|command| command_method command} if commands && commands.kind_of?(Array)
+    module ClassMethods
+      def commands *methods
+        methods.each { |meth| command_method meth }
+      end
     end
 
     def do_redirect path
