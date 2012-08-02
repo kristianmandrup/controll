@@ -1,6 +1,7 @@
 source :rubygems
 
 gem 'hashie', '~> 1.2'
+gem 'liquid'
 
 group :test do
   gem 'imperator', :git => 'git://github.com/kristianmandrup/imperator.git'

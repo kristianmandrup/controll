@@ -1,4 +1,4 @@
-# controll
+# Controll
 
 Some nice and nifty utilities to help you manage complex controller logic. 
 
@@ -229,7 +229,10 @@ module MessageHandler
       def msg_map
         {
           must_sign_in: 'You need to sign in before accessing this page!',
-          auth_service_error: 'There was an error at the remote authentication service. You have not been signed in.',
+          
+          auth_service_error: %q{There was an error at the remote authentication service.
+You have not been signed in.},
+          
           cant_delete_current_account: 'You are currently signed in with this account!',
           user_save_error: 'This is embarrassing! There was an error while creating your account from which we were not able to recover.',
         }
@@ -241,31 +244,31 @@ module MessageHandler
       end
 
       def auth_invalid!
-        'Error while authenticating via ' + full_route + '. The service returned invalid data for the user id.'
+        'Error while authenticating via {{full_route}}. The service returned invalid data for the user id.'
       end
     end
-    
-    # TODO: Support I18n via naming convention t('services.notice.already_connected') and so on...
+
+
     class NoticeMsg < MessageHandler::Notify
       type :notice
 
-      def msg_map
-        {
-          signed_in:  'Your account has been created and you have been signed in!',
-          signed_out: 'You have been signed out!'
-        }
-      end
+      # for :signed_in and :signed_out - defined in locale file under:
+
+      # services:
+      #   notice:
+      #     signed_in:  'Your account has been created and you have been signed in!'
+      #     signed_out: 'You have been signed out!'
 
       def already_connected
-        'Your account at ' + provider_name + ' is already connected with this site.'
+        'Your account at {{provider_name}} is already connected with this site.'
       end
 
       def account_added
-        'Your ' + provider_name + ' account has been added for signing in at this site.'
+        'Your {{provider_name}} account has been added for signing in at this site.'
       end
 
       def sign_in_success
-        'Signed in successfully via ' + provider_name + '.'
+        'Signed in successfully via {{provider_name}}.'
       end
     end
   end
