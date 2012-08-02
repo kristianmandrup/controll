@@ -238,7 +238,6 @@ You have not been signed in.},
         }
       end
 
-      # TODO: Use I18n string replacement technique for params
       def auth_error!
         'Error while authenticating via ' + service_name + '. The service did not return valid data.'
       end
