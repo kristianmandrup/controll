@@ -1,3 +1,5 @@
+require 'controll/flow_handler/base'
+
 module FlowHandler
   class Redirect < Base
     def initialize path, redirect_map = nil

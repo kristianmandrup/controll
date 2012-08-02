@@ -1,5 +1,5 @@
 module FlowHandler
-  class Redirect < Base
+  class Base
     attr_reader :path
 
     def initialize path

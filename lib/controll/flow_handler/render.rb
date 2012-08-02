@@ -1,3 +1,5 @@
+require 'controll/flow_handler/base'
+
 module FlowHandler
   class Render < Base
     def initialize path, events = []

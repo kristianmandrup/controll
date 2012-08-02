@@ -20,7 +20,7 @@ module MessageHandler
       # try various approaches!
       case msg
       when Symbol
-        t "#{i18n_key}.#{msg}"), opts
+        t "#{i18n_key}.#{msg}", opts
       when String
         return replace_args(msg, opts) if msg =~ /{{.*}}/
         msg

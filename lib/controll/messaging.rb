@@ -8,7 +8,7 @@ module Controll
     def notify name, *args
       options = args.extract_options!
       type = args.first || :notify
-      notifications << Hashie::Mash.new {name: name, type: type, options: options}
+      notifications << Hashie::Mash.new(name: name, type: type, options: options)
     end
     
     def notify!

@@ -4,6 +4,7 @@ gem 'hashie', '~> 1.2'
 gem 'liquid'
 
 group :test do
+  gem 'rails', '~> 3'
   gem 'imperator', :git => 'git://github.com/kristianmandrup/imperator.git'
   gem 'focused_controller'
 end

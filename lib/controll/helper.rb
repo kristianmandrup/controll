@@ -1,6 +1,8 @@
+require 'controll/messaging'
+
 module Controll
   module Helper
-    include Messaging
+    include Controll::Messaging
 
     def do_redirect path
       notify!

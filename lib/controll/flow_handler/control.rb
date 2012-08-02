@@ -58,3 +58,5 @@ module FlowHandler
     def executed? 
       @executed
     end
+  end
+end
