@@ -92,18 +92,19 @@ Using the `controll` helpers, you can avoid the typical Rails anti-pattern of Th
 
 ## Usage
 
-In your controller include the `Controll::Messaging` helper module for notification handling.
+In your controller include the `Controll::Helper` helper module.
 
 ```ruby
 class ServicesController < ApplicationController
-  include Controll::Helper
-
   before_filter :authenticate_user!, :except => accessible_actions
   protect_from_forgery :except => :create
+
+  # see 'controll' gem
+  include Controll::Helper
 end
 ```
 
-Better yet, to make it available for all controllers, include it in your ApplicationController or whatever base controller you use.
+Better yet, to make it available for all controllers, include it in your ApplicationController or any base controller of your choice.
 
 ```ruby
 class ApplicationController
@@ -127,7 +128,28 @@ class ServicesController < ApplicationController
 end
 ```
 
-We will implement this MessageHandler later when we know the notifications we want to issue.
+Finally register the Imperator Commands you want to use to encapsulate your main business logic.
+
+```ruby
+class ServicesController < ApplicationController
+
+  protected
+
+  ...
+
+  # register commands with controller
+  commands :cancel_commit, :create_account, :signout
+
+  def sign_in_command
+    @sign_in_command ||= SignInCommand.new auth_hash: auth_hash, user_id: user_id, service_id: service_id, service_hash: service_hash, initiator: self
+  end
+```
+
+The `#commands` class macro can be used to create command methods that only take the initiator (in this case the controller) as argument.
+
+For how to implement the commands, see the `imperator` gem, or see the `oauth_assist` engine for a full example.
+
+We will implement this MessageHandler later when we know which notifications and errors we want to use/issue.
 
 For Controller actions that require complex flow control, use a FlowHandler:
 
@@ -136,7 +158,7 @@ module FlowHandler
   class CreateService < Control
     protected
 
-    # use for more advanced render/redirect logic (fx with arguments)
+    # use for more advanced render/redirect logic (fx when using paths with arguments)
     def use_alternatives      
     end
 
@@ -149,7 +171,11 @@ module FlowHandler
     end
 
     def event
-      @event ||= Authenticator.new(controller).execute
+      @event ||= authentication
+    end
+
+    def authentication
+      @authentication ||= Authenticator.new(controller).execute
     end
 
     class Render < FlowHandler::Render
@@ -163,15 +189,20 @@ module FlowHandler
     end
 
     class Redirect < FlowHandler::Render
-      def self.redirect_map
-        {
-          signin_path:          [:error, :invalid, :auth_error]
+      def self.redirections
+        {        
           signup_services_path: :signed_in_new_user
           services_path:        [:signed_in_connect, :signed_in_new_connect]
           root_url:             [:signed_in_user, :other]
         }
       end
-    end
+
+      def self.error_redirections
+        {
+          signin_path:          [:error, :invalid, :auth_error]
+        }
+      end
+    end  
   end
 end
 ```
@@ -186,10 +217,13 @@ The `Authenticator` inherits from `Executor::Base` which uses method_missing in 
 
 ```ruby
 module Executor
-  class Authenticator < Base
+  class Authenticator < Notificator
     def execute
-      notify(:error) and return unless valid_params?
-      notify(:auth_invalid) and return unless auth_valid?
+      # creates an error notification named :error
+      error and return unless valid_params?
+
+      # creates an error notification named :auth_invalid
+      error(:auth_invalid) and return unless auth_valid?
 
       sign_in_command.perform
       result      
@@ -197,16 +231,8 @@ module Executor
 
     protected
 
-    def result
-      notifications.last || :success # return last notification as result
-    end
-
     def valid_params?
       omniauth and service and auth_hash
-    end  
-
-    def sign_in_command
-      SignInCommand.new auth: auth, auth_hash: auth_hash, user_id: user_id, service_id: service_id, service_hash: service_hash, executor: self
     end
   end
 end
@@ -220,13 +246,19 @@ To encapsulate more complex busines logic affecting the user Session or Model da
 
 Now we are finally ready to define the message handler for each notification event we have defined (this should ideally be done as you define each event!).
 
+The example below demonstrates several different ways you can define messages for events: 
+
+* using the `#messages` method to return a hash of mappings. 
+* define a method for the event name that returns a String (w argument replacement)
+* i18n locale mapping [msghandler name].[notification type].[event name].
+
 ```ruby
 module MessageHandler
   class Services < Typed
     class ErrorMsg < MessageHandler::Notify
       type :error
 
-      def msg_map
+      def messages
         {
           must_sign_in: 'You need to sign in before accessing this page!',
           

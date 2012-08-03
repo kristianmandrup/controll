@@ -12,7 +12,7 @@ module FlowHandler
     end
 
     def self.action event
-      self.new(default_path) if events.include? event
+      self.new(default_path) if events.include? event.name
     end
 
     def self.default_path

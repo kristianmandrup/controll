@@ -11,7 +11,19 @@ module Controll
       notifications << Hashie::Mash.new(name: name, type: type, options: options)
     end
 
-    def error name, options = {}
+    def create_notification name, type, options = {}
+      Hashie::Mash.new(name: name, type: type, options: options)
+    end
+
+    def create_notice name, options = {}
+      create_notification name, :notice, options
+    end
+
+    def create_error name, options = {}
+      create_notification name, :error, options
+    end
+
+    def error name = :error, options = {}
       notify name, :error, options
     end
     

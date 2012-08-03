@@ -11,30 +11,34 @@ module MessageHandler
 
     def notify_msg name, opts = {}
       msg = send(name) if respond_to? name
-      msg ||= msg_map[name.to_sym] if respond_to? :msg_map
-      msg ||= name if i18n_map_match? name
+      msg ||= messages[name.to_sym] if respond_to? :messages
+      msg ||= name.to_sym
 
-      msg_error! if !msg
+      # if name is not mapped to a message, it could well be, that the 
+      # event should not generate a nofification message
+      return !msg 
       
       msg.strip
       # try various approaches!
       case msg
       when Symbol
-        t "#{i18n_key}.#{msg}", opts
+        translate msg, opts
       when String
         return replace_args(msg, opts) if msg =~ /{{.*}}/
         msg
       else
         msg_error!
       end
+    rescue
     end
 
     def msg_error!
       raise "Notify message could not be generated for: #{name}"
     end
 
-    def i18n_map_match? name
-      respond_to?(:i18n_map) && i18n_map.include?(name.to_sym)
+    def translate msg, opts = {}
+      t "#{i18n_key}.#{msg}", opts
+    rescue
     end
 
     def replace_args msg, opts

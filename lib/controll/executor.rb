@@ -1,0 +1,1 @@
+require 'controll/executor/notificator'

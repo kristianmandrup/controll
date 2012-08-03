@@ -1,0 +1,1 @@
+require 'controll/commands/session_command'

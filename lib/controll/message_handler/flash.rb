@@ -11,13 +11,28 @@ module MessageHandler
 
     delegate :flash, to: :controller
 
+    class << self
+      attr_writer :types
+
+      def types
+        @types ||= [:notice, :error]
+      end
+
+      def add_types *types
+        types << types
+      end
+      alias_method :add_type, :add_types
+    end
+
     def options
       controller.msg_options
     end
 
     def signal msg, type = nil
+      return if msg.blank?
       type ||= signal_type
-      flash[type] = msg
+      raise ArgumentError, "Unsupported flash type: #{type}. Register via MessageHandler::Flash#types or #add_type" unless types.include? type.to_sym
+      flash[type] = msg unless type.blank?
     end
 
     def signal_type
