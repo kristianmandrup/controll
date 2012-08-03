@@ -10,6 +10,10 @@ module Controll
       type = args.first || :notify
       notifications << Hashie::Mash.new(name: name, type: type, options: options)
     end
+
+    def error name, options = {}
+      notify name, :error, options
+    end
     
     def notify!
       notifications.each do |message|

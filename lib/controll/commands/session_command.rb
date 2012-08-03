@@ -3,5 +3,5 @@ class SessionCommand < Imperator::Command
 
   protected
 
-  delegate :session, :notify, to: :initiator
+  delegate :session, :notify, :error, to: :initiator
 end
