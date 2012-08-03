@@ -3,8 +3,7 @@ require 'controll/messaging'
 module Controll
   module Helper
     include Controll::Messaging    
-
-    include ActiveSupport::Concern
+    extend ActiveSupport::Concern
 
     delegate :command, :command!, :use_command, to: commander
 
