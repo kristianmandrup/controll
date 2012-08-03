@@ -5,31 +5,47 @@ module Controll
       @notifications ||= []
     end
 
+    def main_event
+      notifications.last || create_notice(:success)
+    end
+
     def notify name, *args
       options = args.extract_options!
       type = args.first || :notify
       notifications << Hashie::Mash.new(name: name, type: type, options: options)
+      self # enable method chaining on controller
     end
 
     def create_notification name, type, options = {}
       Hashie::Mash.new(name: name, type: type, options: options)
     end
 
-    def create_notice name, options = {}
-      create_notification name, :notice, options
+    # allows customization of notification types
+    class << self
+      attr_writer :notification_types
+
+      def notification_types
+        @notification_types ||= default_notification_types
+      end
+
+      def default_notification_types 
+        [:notice, :error]
+      end
     end
 
-    def create_error name, options = {}
-      create_notification name, :error, options
+    notification_types.each do |type|
+      define_method "create_#{type}" do |*args|
+        create_notification args.first, type.to_sym, args.extract_options!
+      end
     end
 
     def error name = :error, options = {}
       notify name, :error, options
     end
     
-    def notify!
+    def process_notifications
       notifications.each do |message|
-        msg_handler.send(message.type).notify message.name, message.options
+        message_handler.send(message.type).notify message.name, message.options
       end
     end
   end

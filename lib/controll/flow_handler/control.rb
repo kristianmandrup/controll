@@ -14,6 +14,8 @@ module FlowHandler
 
     protected
 
+    delegate :command!, to: :controller
+
     # can be used to set up control logic that fall outside what can be done
     # with the basic action_handlers but can not be considered fall-back.
     def use_alternatives

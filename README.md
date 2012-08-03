@@ -112,7 +112,7 @@ class ApplicationController
 end
 ```
 
-In your Controller you should define a MessageHandler to be used.
+In your Controller you should define a MessageHandler and Commander to be used.
 
 ```ruby
 class ServicesController < ApplicationController
@@ -122,20 +122,15 @@ class ServicesController < ApplicationController
 
   protected
 
-  def msg_handler
-    @msg_handler ||= MessageHandler::Services.new self
-  end
+  message_handler :services
+  commander :services
 end
 ```
 
-Finally register the Imperator Commands you want to use to encapsulate your main business logic.
+The Commander is where you register a set of related commands, typically for a specific controller.
 
 ```ruby
-class ServicesController < ApplicationController
-
-  protected
-
-  ...
+class ServicesCommander < Controll::Commander
 
   # register commands with controller
   commands :cancel_commit, :create_account, :signout
@@ -143,6 +138,10 @@ class ServicesController < ApplicationController
   def sign_in_command
     @sign_in_command ||= SignInCommand.new auth_hash: auth_hash, user_id: user_id, service_id: service_id, service_hash: service_hash, initiator: self
   end
+
+  # delegations
+  controller_methods :auth_hash, :user_id, :service_id, :service_hash
+end
 ```
 
 The `#commands` class macro can be used to create command methods that only take the initiator (in this case the controller) as argument.
@@ -213,7 +212,7 @@ If you are rendering or redirecting to paths that take arguments, you can either
 
 ## The Authenticator Executor
 
-The `Authenticator` inherits from `Executor::Base` which uses method_missing in order to delegate any missing method back to the initiator of the Executor, in this case the FlowHandler.
+The `Authenticator` inherits from `Executor::Notificator` which uses `#method_missing` in order to delegate any missing method back to the initiator of the Executor, in this case the FlowHandler. The `#result` call at the end of `#execute` ensures that the last notification event is returned, to be used for deciding what to render or where to redirect (see FlowHandler).
 
 ```ruby
 module Executor
@@ -225,7 +224,7 @@ module Executor
       # creates an error notification named :auth_invalid
       error(:auth_invalid) and return unless auth_valid?
 
-      sign_in_command.perform
+      command! :sign_in
       result      
     end
 
@@ -238,9 +237,7 @@ module Executor
 end
 ```
 
-As you can see, we use the `#notify` command to signal notifications, the last one on the stack which acts as return value for the `#execute` method.
-
-To encapsulate more complex busines logic affecting the user Session or Model data, we execute an Imperator command (see `imperator` gem).
+To encapsulate more complex busines logic affecting the user Session or Model data, we execute an the Imperator Command (see `imperator` gem) called :sign_in that we registered in the Commander of the Controller.
 
 ## Message Handler
 

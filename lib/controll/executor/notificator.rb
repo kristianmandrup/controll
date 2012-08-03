@@ -5,7 +5,7 @@ module Executor
     # return last notification or :success as result
     # Hashie::Mash.new(name: name, type: type, options: options)
     def result
-      notifications.last || create_notice(:success)
+      main_event
     end
   end
 end
