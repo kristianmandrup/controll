@@ -1,10 +1,9 @@
 GIT
-  remote: git://github.com/kristianmandrup/imperator.git
-  revision: d64c9d0123aa190811330898c60350f18dd3ed71
+  remote: git://github.com/kristianmandrup/imperator-ext.git
+  revision: c0efa321ce4801e59ef63a84b4768c1c53abf268
   specs:
-    imperator (0.3.0)
-      activemodel
-      uuid
+    imperator-ext (0.1.0)
+      imperator
       virtus
 
 GEM
@@ -48,6 +47,10 @@ GEM
     hashie (1.2.0)
     hike (1.2.1)
     i18n (0.6.0)
+    imperator (0.2.0)
+      activemodel
+      uuidtools
+      virtus
     jeweler (1.8.4)
       bundler (~> 1.0)
       git (>= 1.2.5)
@@ -56,8 +59,6 @@ GEM
     journey (1.0.4)
     json (1.7.4)
     liquid (2.3.0)
-    macaddr (1.6.1)
-      systemu (~> 2.5.0)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -106,15 +107,13 @@ GEM
       hike (~> 1.2)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    systemu (2.5.2)
     thor (0.15.4)
     tilt (1.3.3)
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.33)
-    uuid (2.3.5)
-      macaddr (~> 1.0)
+    uuidtools (2.1.3)
     virtus (0.5.1)
       backports (~> 2.6.1)
 
@@ -125,7 +124,7 @@ DEPENDENCIES
   bundler (>= 1.0.0)
   focused_controller
   hashie (~> 1.2)
-  imperator!
+  imperator-ext!
   jeweler (>= 1.8.4)
   liquid
   rails (~> 3)

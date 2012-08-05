@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
   s.date = "2012-08-02"
-  s.description = "FlowHandler, Executor, MessageHandler and more, all tied together into a nice pack of tools..."
+  s.description = "FlowHandler, Executor, Notifier and more, all tied together into a nice pack of tools..."
   s.email = "kmandrup@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",

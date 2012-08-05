@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "controll"
   gem.homepage = "http://github.com/kristianmandrup/controll"
   gem.license = "MIT"
-  gem.summary = %Q{Better structuring utils for your complex Controller logic}
-  gem.description = %Q{FlowHandler, Executor, MessageHandler and more, all tied together into a nice pack of tools...}
+  gem.summary = %Q{Utils for handling complex Controller/Business logic}
+  gem.description = %Q{FlowHandler, Executor, Notifier and more, all tied together tool pack}
   gem.email = "kmandrup@gmail.com"
   gem.authors = ["Kristian Mandrup"]
   # dependencies defined in Gemfile
