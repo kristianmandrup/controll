@@ -1,4 +1,8 @@
-require 'controll/flow_handler/base'
-require 'controll/flow_handler/control'
-require 'controll/flow_handler/render'
-require 'controll/flow_handler/redirect'
+module Controll
+  module FlowHandler
+    autoload :Base,     'controll/flow_handler/base'
+    autoload :Control,  'controll/flow_handler/control'
+    autoload :Redirect, 'controll/flow_handler/redirect'
+    autoload :Render,   'controll/flow_handler/render'
+  end
+end

@@ -5,7 +5,7 @@ gem 'liquid'
 
 group :test do
   gem 'rails', '~> 3'
-  gem 'imperator', :git => 'git://github.com/kristianmandrup/imperator.git'
+  gem 'imperator-ext',       :git => 'git://github.com/kristianmandrup/imperator-ext.git'
   gem 'focused_controller'
 end
 

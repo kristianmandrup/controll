@@ -1,6 +1,6 @@
 require 'controll/flow_handler/base'
 
-module FlowHandler
+module Controll::FlowHandler
   class Render < Base
     def initialize path, events = []
       super path

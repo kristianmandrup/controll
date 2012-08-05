@@ -153,7 +153,7 @@ We will implement this MessageHandler later when we know which notifications and
 For Controller actions that require complex flow control, use a FlowHandler:
 
 ```ruby
-module FlowHandler
+module Controll::FlowHandler
   class CreateService < Control
     protected
 
@@ -177,7 +177,7 @@ module FlowHandler
       @authentication ||= Authenticator.new(controller).execute
     end
 
-    class Render < FlowHandler::Render
+    class Render < Controll::FlowHandler::Render
       def self.default_path
         :signup_services_path
       end
@@ -187,7 +187,7 @@ module FlowHandler
       end
     end
 
-    class Redirect < FlowHandler::Render
+    class Redirect < Controll::FlowHandler::Render
       def self.redirections
         {        
           signup_services_path: :signed_in_new_user
@@ -215,7 +215,7 @@ If you are rendering or redirecting to paths that take arguments, you can either
 The `Authenticator` inherits from `Executor::Notificator` which uses `#method_missing` in order to delegate any missing method back to the initiator of the Executor, in this case the FlowHandler. The `#result` call at the end of `#execute` ensures that the last notification event is returned, to be used for deciding what to render or where to redirect (see FlowHandler).
 
 ```ruby
-module Executor
+module Controll::Executor
   class Authenticator < Notificator
     def execute
       # creates an error notification named :error
@@ -239,7 +239,7 @@ end
 
 To encapsulate more complex busines logic affecting the user Session or Model data, we execute an the Imperator Command (see `imperator` gem) called :sign_in that we registered in the Commander of the Controller.
 
-## Message Handler
+## Notifier
 
 Now we are finally ready to define the message handler for each notification event we have defined (this should ideally be done as you define each event!).
 
@@ -250,9 +250,9 @@ The example below demonstrates several different ways you can define messages fo
 * i18n locale mapping [msghandler name].[notification type].[event name].
 
 ```ruby
-module MessageHandler
+module Controll::Notify
   class Services < Typed
-    class ErrorMsg < MessageHandler::Notify
+    class ErrorMsg < Controll::Notify::Base
       type :error
 
       def messages
@@ -277,7 +277,7 @@ You have not been signed in.},
     end
 
 
-    class NoticeMsg < MessageHandler::Notify
+    class NoticeMsg < Controll::Notify::Base
       type :notice
 
       # for :signed_in and :signed_out - defined in locale file under:
@@ -302,8 +302,6 @@ You have not been signed in.},
   end
 end
 ```
-
-Note: The `MessageHandler` currently still needs some love for the above to work and it should also be made to work nicely with I18n.
 
 ## Contributing to controll
  

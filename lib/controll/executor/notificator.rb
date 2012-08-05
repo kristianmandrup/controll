@@ -1,6 +1,6 @@
 require 'controll/executor/base'
 
-module Executor
+module Controll::Executor
   class Notificator < Base
     # return last notification or :success as result
     # Hashie::Mash.new(name: name, type: type, options: options)

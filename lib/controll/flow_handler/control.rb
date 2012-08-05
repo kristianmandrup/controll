@@ -1,4 +1,4 @@
-module FlowHandler
+module Controll::FlowHandler
   class Control
     attr_reader :controller
 

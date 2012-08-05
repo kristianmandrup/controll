@@ -1,4 +1,4 @@
-module FlowHandler
+module Controll::FlowHandler
   class Base
     attr_reader :path
 

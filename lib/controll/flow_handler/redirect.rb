@@ -1,6 +1,6 @@
 require 'controll/flow_handler/base'
 
-module FlowHandler
+module Controll::FlowHandler
   class Redirect < Base
     def initialize path, maps = nil
       super path

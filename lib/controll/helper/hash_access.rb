@@ -1,5 +1,5 @@
-module Controll
-  module HashAccessHelper
+module Controll::Helper
+  module HashAccess
     extend ActiveSupport::Concern
 
     module ClassMethods

@@ -1,11 +1,15 @@
-require 'controll/messaging'
-
 module Controll
   module Helper
-    include Controll::Messaging    
+    autoload :Notify,     'controll/helper/notify'
+    autoload :Params,     'controll/helper/params'
+    autoload :HashAccess, 'controll/helper/hash_access'
+
+    include Controll::Helper::Notify
+    include Controll::Helper::Params
+
     extend ActiveSupport::Concern
 
-    delegate :command, :command!, :use_command, to: commander
+    delegate :command, :command!, :use_command, to: :commander
 
     module ClassMethods
       # TODO: refactor - all use exactly the same pattern - can be generated!
