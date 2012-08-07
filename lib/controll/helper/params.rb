@@ -4,10 +4,15 @@ module Controll
       extend Controll::Helper::HashAccess
 
       module ClassMethods
-        def param_methods *names
-          hash_access_method *names, hash: :params
+        def param_methods *args
+          options = args.extract_options!
+          names = args
+          hash_access_method *names, options.merge(hash: :params)
         end
-        alias_method :param_method, :param_methods
+
+        def param_method name, options = {}
+          hash_access_method name, options.merge(hash: :params)
+        end
       end
     end
   end

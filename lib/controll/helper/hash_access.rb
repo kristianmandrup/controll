@@ -6,22 +6,21 @@ module Controll::Helper
       def hash_access_methods *args
         options = args.extract_options!
         hash_name = options[:hash]
+        names = args
+
+        raise ArgumentError, "Must take a :hash option indicating the hash name to access" unless hash_name
+        raise ArgumentError, "Must take one or more names of methods to create" if names.blank? 
+
         names.each do |name|
-
-        value = send(hash_name)
-        methname = name
-        if name.kind_of?(Array)
-          name.each {|n| value = value[n] } 
-          methname = name.join('_')
-        end
-
-        define_method methname do            
-          unless instance_variable_get("@#{methname}")                          
-            instance_variable_set "@#{methname}", value
+          define_method name do            
+            unless instance_variable_get("@#{name}")
+              instance_variable_set "@#{name}", (send(hash_name, name.to_sym) || options[:default])
+            end
           end
         end
       end
-      alias_method :param_method, :param_methods
+
+      alias_method :hash_access_method, :hash_access_methods
     end
   end
 end

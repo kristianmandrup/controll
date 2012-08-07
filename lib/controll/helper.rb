@@ -1,8 +1,9 @@
 module Controll
   module Helper
     autoload :Notify,     'controll/helper/notify'
-    autoload :Params,     'controll/helper/params'
     autoload :HashAccess, 'controll/helper/hash_access'
+    autoload :Params,     'controll/helper/params'
+    autoload :Session,    'controll/helper/session'
 
     include Controll::Helper::Notify
     include Controll::Helper::Params
