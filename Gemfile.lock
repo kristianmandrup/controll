@@ -124,6 +124,7 @@ DEPENDENCIES
   bundler (>= 1.0.0)
   focused_controller!
   hashie (~> 1.2)
+  i18n (>= 0.6)
   imperator-ext (~> 0.2.0)
   jeweler (>= 1.8.4)
   liquid

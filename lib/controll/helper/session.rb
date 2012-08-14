@@ -1,10 +1,11 @@
 module Controll
   module Helper
     module Session
-      extend Controll::Helper::HashAccess
+      extend ActiveSupport::Concern
+      include Controll::Helper::HashAccess
 
       module ClassMethods
-        def session_methods *names
+        def session_methods *args
           options = args.extract_options!
           names = args
           hash_access_method *names, options.merge(hash: :session)

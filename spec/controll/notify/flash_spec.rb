@@ -18,10 +18,10 @@ describe Controll::Notify::Flash do
 
     describe '.add_types' do
       before do
-        subject.add_types << [:warning, :success]
+        subject.add_types :payment, :help
       end
 
-      its(:types) { should include(:warning, :success) }
+      its(:types) { should include(:payment, :help) }
     end
   end
 end

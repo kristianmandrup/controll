@@ -1,6 +1,18 @@
 module Controll
   module Helper
     module Notify
+      extend ActiveSupport::Concern
+
+      included do
+        attr_writer :notification_types
+
+        notification_types.each do |type|
+          define_method "create_#{type}" do |*args|
+            create_notification args.first, type.to_sym, args.extract_options!
+          end
+        end
+      end
+
       # msg stack
       def notifications
         @notifications ||= []
@@ -10,39 +22,41 @@ module Controll
         notifications.last || create_notice(:success)
       end
 
-      def notify name, *args
-        options = args.extract_options!
-        type = args.first || :notify
-        notifications << Hashie::Mash.new(name: name, type: type, options: options)
+      def notify name, type = nil, options = {}        
+        notifications << create_notification(name, type, options)
         self # enable method chaining on controller
       end
 
-      def create_notification name, type, options = {}
+      protected
+
+      def error name = :error, options = {}
+        notify name, :error, options
+      end
+
+      def success name = :success, options = {}
+        notify name, :success, options
+      end
+
+      def create_notification name, type = nil, options = {}
+        type ||= :notice
+        raise ArgumentError, "Not a valid notification type: #{type}, must be one of: #{valid_notification_types}" unless valid_notification_type?(type)
         Hashie::Mash.new(name: name, type: type, options: options)
       end
       alias_method :create_event, :create_notification
 
-      # allows customization of notification types
-      class << self
-        attr_writer :notification_types
+      def valid_notification_type? type
+        self.class.notification_types.include? type
+      end
 
+      # allows customization of notification types
+      module ClassMethods
         def notification_types
           @notification_types ||= default_notification_types
         end
 
         def default_notification_types 
-          [:notice, :error]
+          Controll::Notify::Flash.types
         end
-      end
-
-      notification_types.each do |type|
-        define_method "create_#{type}" do |*args|
-          create_notification args.first, type.to_sym, args.extract_options!
-        end
-      end
-
-      def error name = :error, options = {}
-        notify name, :error, options
       end
       
       def process_notifications
