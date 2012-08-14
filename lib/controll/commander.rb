@@ -20,13 +20,15 @@ module Controll
     end
     alias_method :use_command, :command!
 
-    def self.commands *methods
-      methods.each { |meth| command_method meth }
-    end
+    class << self
+      def commands *methods
+        methods.each { |meth| command_method meth }
+      end
 
-    # what to delegate to controller
-    def self.controller_methods
-      delegate :auth_hash, :user_id, :service_id, :service_hash, :to => :controller
+      # what to delegate to controller
+      def controller_methods
+        delegate :auth_hash, :user_id, :service_id, :service_hash, :to => :controller
+      end
     end
   end
 end
