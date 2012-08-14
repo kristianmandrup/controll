@@ -1,0 +1,6 @@
+source 'http://rubygems.org'
+
+gem 'rails', ENV['RAILS_VERSION'] || '~> 3.2.1'
+gem 'focused_controller', :path => '../..'
+gem 'rspec'
+gem 'rspec-rails'

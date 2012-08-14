@@ -1,6 +1,7 @@
 module Controll
 end
 
+require 'imperator-ext'
 require 'controll/executor'
 require 'controll/notify'
 require 'controll/flow_handler'

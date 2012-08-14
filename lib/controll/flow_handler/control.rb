@@ -26,7 +26,7 @@ module Controll::FlowHandler
     end    
 
     def event
-      raise NotImplementedError, 'You must define a #event method that at least returns an event (Symbol). You can use an Executor for this.'
+      raise NotImplementedError, 'You must define an #event method that at least returns an event (Symbol). You can use an Executor for this.'
     end
 
     def action_handlers

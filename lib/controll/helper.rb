@@ -18,7 +18,7 @@ module Controll
         define_method :commander do
           unless instance_variable_get("@commander")
             clazz = "#{name.to_s.camelize}Commander".constantize        
-            instance_variable_set "@commander", clazz.new self, options
+            instance_variable_set "@commander", clazz.new(self, options)
           end
         end
       end
@@ -27,7 +27,7 @@ module Controll
         define_method :message_handler do
           unless instance_variable_get("@message_handler")
             clazz = "#{name.to_s.camelize}MessageHandler".constantize        
-            instance_variable_set "@message_handler", clazz.new self, options
+            instance_variable_set "@message_handler", clazz.new(self, options)
           end
         end
       end
@@ -36,7 +36,7 @@ module Controll
         define_method :assistant do
           unless instance_variable_get("@assistant")
             clazz = "#{name.to_s.camelize}Assistant".constantize        
-            instance_variable_set "@assistant", clazz.new self, options
+            instance_variable_set "@assistant", clazz.new(self, options)
           end
         end
       end
@@ -45,7 +45,7 @@ module Controll
         define_method :flow_handler do
           unless instance_variable_get("@flow_handler")
             clazz = "FlowHandler::#{name.to_s.camelize}".constantize        
-            instance_variable_set "@flow_handler", clazz.new self, options
+            instance_variable_set "@flow_handler", clazz.new(self, options)
           end
         end
       end
@@ -54,7 +54,7 @@ module Controll
         define_method :assistant do
           unless instance_variable_get("@assistant")
             clazz = "#{name.to_s.camelize}DelegateAssistant".constantize        
-            instance_variable_set "@assistant", clazz.new self, options
+            instance_variable_set "@assistant", clazz.new(self, options)
           end
         end
       end
@@ -69,7 +69,7 @@ module Controll
     end
 
     def do_redirect *args
-      [path, options] = arg_resolver.extract_args :redirect_map, *args
+      path, options = arg_resolver.extract_args(:redirect_map, *args)
       process_notifications
       redirect_to path, *args
     end
