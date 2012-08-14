@@ -1,7 +1,8 @@
 module Controll
   module Helper
     module Params 
-      extend Controll::Helper::HashAccess
+      extend ActiveSupport::Concern
+      include Controll::Helper::HashAccess
 
       module ClassMethods
         def param_methods *args

@@ -14,7 +14,7 @@ module Controll::Helper
         names.each do |name|
           define_method name do            
             unless instance_variable_get("@#{name}")
-              instance_variable_set "@#{name}", (send(hash_name, name.to_sym) || options[:default])
+              instance_variable_set "@#{name}", (send(hash_name)[name.to_sym]) || options[:default]
             end
           end
         end
