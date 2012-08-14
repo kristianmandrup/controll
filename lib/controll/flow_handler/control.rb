@@ -1,5 +1,7 @@
 module Controll::FlowHandler
   class Control
+    class ActionEventError < StandardError; end
+
     attr_reader :controller, :action_handlers
 
     def initialize controller, action_handlers = []
@@ -10,11 +12,16 @@ module Controll::FlowHandler
     def execute
       use_action_handlers
       use_alternatives
-      use_fallback if !executed? 
+      use_fallback if !executed?
+      self
     end
 
     def action_handlers
-      @action_handlers ||= [Redirect, Render]
+      @action_handlers ||= [:redirect, :render]
+    end
+
+    def executed? 
+      @executed
     end
 
     protected
@@ -26,8 +33,7 @@ module Controll::FlowHandler
     def use_alternatives
     end
 
-    def use_fallback
-      raise NotImplementedError, 'You must define a #use_fallback method'
+    def use_fallback  
     end    
 
     def event
@@ -38,24 +44,42 @@ module Controll::FlowHandler
       do_redirect root_url
     end
 
+    NoEventsDefinedError    = Controll::FlowHandler::Render::NoEventsDefinedError
+    NoRedirectionFoundError = Controll::FlowHandler::Redirect::NoRedirectionFoundError    
+
     def use_action_handlers
+      errors = []
       action_handlers.each do |action_handler|
-        execute_with action_handler.action(event)
-      end      
+        begin          
+          action_handler_clazz = handler_class(action_handler)
+          next unless action_handler_clazz
+          action = action_handler_clazz.action(event)
+          execute_with action
+          return if executed?
+        rescue NoEventsDefinedError => e
+          errors << e
+        rescue NoRedirectionFoundError => e
+          errors << e
+        end
+      end
+      raise ActionEventError, "#{errors.join ','}" unless errors.empty?
+    end
+
+    def handler_class action_handler
+      clazz = "#{self.class}::#{action_handler.to_s.camelize}"
+      clazz.constantize
+    rescue NameError
+      nil
     end
 
     def execute_with action
       return if !action
       action.perform(controller)
-      executed!
+      executed!      
     end
 
     def executed!
       @executed = true
-    end
-
-    def executed? 
-      @executed
     end
   end
 end

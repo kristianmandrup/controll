@@ -25,7 +25,7 @@ module Controll::FlowHandler
 
       # event is a Hashie::Mash or simply a Symbol (default notice event)
       def action event
-        redirect = nil
+        return unless event_name_of(event)
         mm = matching_maps(event)
         mm.each do |redirect_map|
           continue unless respond_to?(redirect_map)

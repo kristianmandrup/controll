@@ -3,6 +3,7 @@ require 'controll/flow_handler/base'
 module Controll::FlowHandler
   class Render < Base
     class NoEventsDefinedError < StandardError; end
+    class BadPathError < StandardError; end
 
     def initialize path #, events = []
       super path
@@ -10,6 +11,7 @@ module Controll::FlowHandler
     end
 
     def perform controller
+      raise BadPathError, "Bad path: #{path}" if path.blank?
       controller.render controller.send(path)
     end
 
