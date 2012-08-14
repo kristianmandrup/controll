@@ -1,15 +1,20 @@
 module Controll::FlowHandler
   class Control
-    attr_reader :controller
+    attr_reader :controller, :action_handlers
 
-    def initialize controller
+    def initialize controller, action_handlers = []
       @controller = controller
+      @action_handlers = action_handlers unless action_handlers.blank?
     end
 
     def execute
       use_action_handlers
       use_alternatives
       use_fallback if !executed? 
+    end
+
+    def action_handlers
+      @action_handlers ||= [Redirect, Render]
     end
 
     protected
@@ -29,10 +34,6 @@ module Controll::FlowHandler
       raise NotImplementedError, 'You must define an #event method that at least returns an event (Symbol). You can use an Executor for this.'
     end
 
-    def action_handlers
-      []
-    end
-
     def fallback_action
       do_redirect root_url
     end
@@ -41,10 +42,6 @@ module Controll::FlowHandler
       action_handlers.each do |action_handler|
         execute_with action_handler.action(event)
       end      
-    end
-
-    def action_handlers
-      [Redirect, Render]
     end
 
     def execute_with action

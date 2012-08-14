@@ -1,6 +1,7 @@
 module Controll
 end
 
+require 'hashie'
 require 'imperator-ext'
 require 'controll/executor'
 require 'controll/notify'

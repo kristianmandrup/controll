@@ -20,6 +20,7 @@ module Controll
       def create_notification name, type, options = {}
         Hashie::Mash.new(name: name, type: type, options: options)
       end
+      alias_method :create_event, :create_notification
 
       # allows customization of notification types
       class << self
