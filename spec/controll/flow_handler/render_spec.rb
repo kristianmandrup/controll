@@ -13,13 +13,8 @@ class HiRender < Controll::FlowHandler::Render
 end
 
 class HelloRender < Controll::FlowHandler::Render
-  def self.events
-    [:hello]
-  end
-
-  def self.default_path
-    '/default'
-  end
+  set_events :hello, :damn
+  set_default_path '/default'
 end
 
 def notification name

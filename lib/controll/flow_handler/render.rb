@@ -13,17 +13,36 @@ module Controll::FlowHandler
       controller.render controller.send(path)
     end
 
-    def self.action event, path = nil
-      raise NoEventsDefinedError, "You must define a #{self}#events class method that returns a render map" unless respond_to?(:events)
-      raise NoEventsDefinedError, "The #{self}#events class method must return a render map, was #{events}" if events.blank?      
+    class << self
+      def action event, path = nil
+        raise NoEventsDefinedError, "You must define a #{self}#events class method that returns a render map" unless respond_to?(:events)
+        raise NoEventsDefinedError, "The #{self}#events class method must return a render map, was #{events}" if events.blank?      
+        self.new(path || default_path) if events.include? event_name_of(event)
+      end
 
-      event_name = event.respond_to?(:name) ? event.name : event
+      def event_name_of event
+        event.respond_to?(:name) ? event.name : event
+      end
 
-      self.new(path || default_path) if events.include? event_name
+      def default_path
+        raise NotImplementedError, "You must set a default_path or override the #{self}#action class method"
+      end
+
+      # http://bugs.ruby-lang.org/issues/1082
+      #   hello.singleton_class
+      # Instead of always having to write:
+      #   (class << hello; self; end)
+      def set_default_path str = nil, &block
+        (class << self; self; end).send :define_method, :default_path do 
+          block_given? ? yield : str
+        end
+      end 
+
+      def set_events *args, &block
+        (class << self; self; end).send :define_method, :events do 
+          block_given? ? yield : args.flatten
+        end
+      end 
     end
-
-    def self.default_path
-      raise NotImplementedError, "You must set a default_path or override the #{self}#action class method"
-    end 
   end
 end

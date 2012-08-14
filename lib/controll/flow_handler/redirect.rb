@@ -2,10 +2,13 @@ require 'controll/flow_handler/base'
 
 module Controll::FlowHandler
   class Redirect < Base
+    class NoRedirectionFoundError < StandardError; end
+
     def initialize path, maps = nil
       super path
-
+      return if map.blank?
       # try to set redirect mappings if passed as 2nd arg
+
       class_eval do
         redirect_maps.each do |name|
           send("#{name}=", maps[name]) if send(name)
@@ -25,9 +28,10 @@ module Controll::FlowHandler
       def action event
         redirect_maps.each do |redirect_map|
           continue unless respond_to? redirect_map # skip any undefined redirect_map
-          handle_map redirect_map, event
+          redirect = handle_map redirect_map, event
+          break redirect if redirect
         end
-        nil
+        raise NoRedirectionFoundError, "No redirection could be found for: #{event} in any of #{redirect_maps}"
       end
 
       def handle_map redirect_map, event
