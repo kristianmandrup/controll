@@ -3,21 +3,15 @@ require 'spec_helper'
 require 'spec_helper'
 
 class HelloToWelcomeRedirect < Controll::FlowHandler::Redirect
-  def self.redirections
-    {:hello => 'welcome'}
-  end
+  set_redirections :welcome => [:hello, :hi]
+
+  # def self.redirections
+  #   {:hello => 'welcome'}
+  # end
 end
 
-class HiRedirect < Controll::FlowHandler::Redirect
-  def self.events
-    [:hi]
-  end
-end
-
-class HelloRedirect < Controll::FlowHandler::Redirect
-  def self.events
-    [:hello]
-  end  
+class ErrorRedirect < Controll::FlowHandler::Redirect
+  set_redirections :error, bad: 'bad_payment'
 end
 
 def notification name
@@ -54,11 +48,15 @@ describe Controll::FlowHandler::Redirect do
         specify do
           clazz.action(:hello).should be_a HelloToWelcomeRedirect
         end
+
+        specify do
+          clazz.action(:hi).path.should == 'welcome'
+        end
       end
     end
   end
 
-  # context 'HiRedirect subclass' do
+  # context 'ErrorRedirect subclass' do
   #   subject { clazz.new '/' }
 
   #   let(:clazz) { HiRedirect }

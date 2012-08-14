@@ -20,10 +20,6 @@ module Controll::FlowHandler
         self.new(path || default_path) if events.include? event_name_of(event)
       end
 
-      def event_name_of event
-        event.respond_to?(:name) ? event.name : event
-      end
-
       def default_path
         raise NotImplementedError, "You must set a default_path or override the #{self}#action class method"
       end
