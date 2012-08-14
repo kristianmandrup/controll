@@ -26,36 +26,42 @@ module Controll::FlowHandler
       # event is a Hashie::Mash or simply a Symbol (default notice event)
       def action event
         redirect = nil
-        redirect_maps.each do |redirect_map|
-          continue unless respond_to? redirect_map # skip any undefined redirect_map
+        mm = matching_maps(event)
+        mm.each do |redirect_map|
+          continue unless respond_to?(redirect_map)
           redirect = handle_map redirect_map, event
-          break redirect if redirect
+          return redirect unless redirect.blank?
         end
-        return redirect unless redirect.blank?
-        raise NoRedirectionFoundError, "No redirection could be found for: #{event} in any of #{redirect_maps}"
+        raise NoRedirectionFoundError, "No redirection could be found for: #{event} in any of #{mm}"
       end
 
+      def matching_maps event
+        redirect_maps.select {|map| event_map_match?(event, map) }
+      end
+
+      # An events can also be a Symbol,
+      # in which case it is a :notice event
       def handle_map redirect_map, event
-        # note: events can also be a single symbol!
         send(redirect_map).each do |path, events|
-          valid = valid_context?(event, events, redirect_map)
+          valid = event_match?(events, event)
           return self.new(path) if valid
         end
+        nil
       end        
 
-      def valid_context? event, events, redirect_map
-         event_match?(events, event) && event_map_match?(event, redirect_map)
+      def event_match? events, event
+        normalize(events).include?(event_name_of event)
       end
 
-      def event_match? events, event
-        [events].flatten.include?(event_name_of event)
+      def normalize events
+        [events].flatten.map(&:to_sym)
       end
 
       # Special - :redirections applies for :notice events
       # :error_redirections applies for :error events and so on
-      def event_map_match? event, redirect_map
-        type =event_type_of(event)
-        (type == :notice && redirect_map == :redirections) || redirect_map.to_s =~/^#{type}/
+      def event_map_match? event, map
+        type = event_type_of(event)
+        (type == :notice && map == :redirections) || map.to_s =~/^#{type}/
       end
 
       def redirect_maps
@@ -71,8 +77,8 @@ module Controll::FlowHandler
       end
 
       def set_redirections *args, &block
-        postfix = args.first if args.first.kind_of?(Symbol)        
-        methname = [:redirections, postfix].compact.join('_')
+        postfix = args.shift if args.first.kind_of?(Symbol)        
+        methname = [postfix, :redirections].compact.join('_')
         (class << self; self; end).send :define_method, methname do 
           block_given? ? yield : args.first
         end

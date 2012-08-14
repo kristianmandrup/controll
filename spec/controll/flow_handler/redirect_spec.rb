@@ -4,18 +4,18 @@ require 'spec_helper'
 
 class HelloToWelcomeRedirect < Controll::FlowHandler::Redirect
   set_redirections :welcome => [:hello, :hi]
-
-  # def self.redirections
-  #   {:hello => 'welcome'}
-  # end
 end
 
-class ErrorRedirect < Controll::FlowHandler::Redirect
-  set_redirections :error, bad: 'bad_payment'
+class ErrorBadRedirect < Controll::FlowHandler::Redirect
+  set_redirections :error, bad: ['bad_payment', 'wrong_payment']
 end
 
 def notification name
-  Hashie::Mash.new(name: name.to_sym, type: :notification)
+  Hashie::Mash.new(name: name.to_sym, type: :notice)
+end
+
+def error name
+  Hashie::Mash.new(name: name.to_sym, type: :error)
 end
 
 describe Controll::FlowHandler::Redirect do
@@ -39,7 +39,7 @@ describe Controll::FlowHandler::Redirect do
 
     let(:clazz) { HelloToWelcomeRedirect }
 
-    context 'empty events' do
+    context 'has redirections' do
       describe '.action event' do
         specify do
           expect { clazz.action(:hello) }.to_not raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
@@ -56,60 +56,26 @@ describe Controll::FlowHandler::Redirect do
     end
   end
 
-  # context 'ErrorRedirect subclass' do
-  #   subject { clazz.new '/' }
+  context 'ErrorBadRedirect subclass' do
+    subject { clazz.new '/' }
 
-  #   let(:clazz) { HiRedirect }
-  #   let(:event) { notification :hello }
+    let(:clazz) { ErrorBadRedirect }
 
-  #   context 'has events' do
-  #     describe '.action event' do
+    context 'has error redirections' do
+      describe '.action event' do
+        specify do
+          expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
+        end
 
-  #       describe 'does not respond to hello' do
-  #         specify do
-  #           expect { clazz.action(:hello) }.to_not raise_error(Controll::FlowHandler::Redirect::NoEventsDefinedError)
-  #         end
+        specify do
+          clazz.action(error :bad_payment).should be_a ErrorBadRedirect
+        end
 
-  #         specify do
-  #           clazz.action(event).should == nil
-  #         end
+        specify do
+          clazz.action(error :wrong_payment).path.should == 'bad'
+        end
+      end
+    end
+  end
 
-  #         specify do
-  #           clazz.action(:hello).should == nil
-  #         end
-  #       end
-
-  #       describe 'responds to hi' do
-  #         # default_path not implemented!
-  #         specify do
-  #           expect { clazz.action(:hi) }.to raise_error NotImplementedError
-  #         end
-  #       end
-  #     end
-  #   end
-  # end
-
-  # context 'HelloRedirect subclass' do
-  #   subject { clazz.new default_path }
-
-  #   let(:clazz) { HelloRedirect }
-  #   let(:event) { notification :hello }
-  #   let(:default_path) { '/default' } 
-
-  #   context 'has events and default_path' do
-  #     describe '.action event' do
-  #       specify do
-  #         clazz.action(event).should be_a HelloRedirect
-  #       end        
-
-  #       specify do
-  #         clazz.action(event).path.should == default_path
-  #       end        
-
-  #       specify do
-  #         clazz.action(event, 'other_path').path.should == 'other_path'
-  #       end        
-  #     end
-  #   end
-  # end  
 end
