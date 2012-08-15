@@ -45,8 +45,13 @@ module Controll
       alias_method :create_event, :create_notification
 
       def valid_notification_type? type
-        self.class.notification_types.include? type
+        notification_types.include? type.to_sym
       end
+
+      def notification_types
+        return self.class.notification_types if self.class.respond_to? :notification_types
+        Controll::Notify::Flash.types
+      end 
 
       # allows customization of notification types
       module ClassMethods

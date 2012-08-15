@@ -1,9 +1,10 @@
 module Controll
   module Helper
-    autoload :Notify,     'controll/helper/notify'
-    autoload :HashAccess, 'controll/helper/hash_access'
-    autoload :Params,     'controll/helper/params'
-    autoload :Session,    'controll/helper/session'
+    autoload :Notify,       'controll/helper/notify'
+    autoload :HashAccess,   'controll/helper/hash_access'
+    autoload :Params,       'controll/helper/params'
+    autoload :Session,      'controll/helper/session'
+    autoload :PathResolver, 'controll/helper/path_resolver'
 
     include Controll::Helper::Notify
     include Controll::Helper::Params
@@ -44,7 +45,7 @@ module Controll
       def flow_handler name, options = {}
         define_method :flow_handler do
           unless instance_variable_get("@flow_handler")
-            clazz = "FlowHandler::#{name.to_s.camelize}".constantize        
+            clazz = "#{name.to_s.camelize}FlowHandler".constantize        
             instance_variable_set "@flow_handler", clazz.new(self, options)
           end
         end
@@ -69,45 +70,31 @@ module Controll
     end
 
     def do_redirect *args
-      path, options = arg_resolver.extract_args(:redirect_map, *args)
+      options = args.extract_options!
+      path = path_resolver.extract_path(:redirect_map, *args)
       process_notifications
       redirect_to path, *args
     end
 
     def do_render *args
       options = args.extract_options!
-      path = arg_resolver.extract_path :render_paths, *args
+      path = path_resolver.extract_path :render_paths, *args
       process_notifications
-      render path. *args
+      render path, *args
     end
 
     protected
 
-    def arg_resolver
-      @arg_resolver ||= ArgResolver.new self
+    def redirect_map
+      self.class.redirect_map
     end
 
-    class PathResolver
-      attr_reader :caller
+    def render_paths
+      self.class.render_map
+    end
 
-      def initialize caller
-        @caller = caller
-      end
-
-      def extract_args type, *args
-        if args.first.kind_of?(Symbol)
-          parent.notice args.first
-          resolve_path type
-        else      
-          args.empty? ? resolve_path(type) : args.first
-        end
-      end
-
-      def resolve_path type
-        send(type).each do |path, events|
-          return path if events.include? main_event
-        end
-      end
+    def path_resolver
+      @path_resolver ||= PathResolver.new self
     end
   end
 end

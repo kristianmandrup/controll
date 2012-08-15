@@ -19,16 +19,6 @@ module Controll
       command(name, *args).perform
     end
     alias_method :use_command, :command!
-
-    class << self
-      def commands *methods
-        methods.each { |meth| command_method meth }
-      end
-
-      # what to delegate to controller
-      def controller_methods
-        delegate :auth_hash, :user_id, :service_id, :service_hash, :to => :controller
-      end
-    end
+    alias_method :perform_command, :command!
   end
 end

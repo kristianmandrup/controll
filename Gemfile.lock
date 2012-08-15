@@ -48,7 +48,7 @@ GEM
       activemodel
       uuidtools
       virtus
-    imperator-ext (0.2.0)
+    imperator-ext (0.2.1)
       imperator
       virtus
     jeweler (1.8.4)
