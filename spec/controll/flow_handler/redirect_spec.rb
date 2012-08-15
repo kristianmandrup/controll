@@ -6,7 +6,7 @@ class HelloToWelcomeRedirect < Controll::FlowHandler::Redirect
   set_redirections :welcome => [:hello, :hi]
 end
 
-class ErrorBadRedirect < Controll::FlowHandler::Redirect
+class ErrorBadRedirect < Controll::FlowHandler::Redirect  
   set_redirections :error, bad: ['bad_payment', 'wrong_payment']
 end
 
@@ -20,41 +20,51 @@ end
 
 describe Controll::FlowHandler::Redirect do
 
-  context 'use directly without sublclassing' do
-    subject { clazz.new '/' }
-
-    let(:clazz) { Controll::FlowHandler::Redirect }
-
-    let(:hello) { notification :hello }
-
-    describe '.action event' do
-      specify do
-        expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
-      end
+  describe 'class macros' do
+    before :all do
+      ErrorBadRedirect.set_redirections :error, crap: ['bad_payment', 'wrong_payment']
     end
+
+    specify {
+      ErrorBadRedirect.redirections(:error).should == {crap: ['bad_payment', 'wrong_payment']}
+    }
   end
 
-  context 'HelloToWelcomeRedirect subclass' do
-    subject { clazz.new '/' }
+  # context 'use directly without sublclassing' do
+  #   subject { clazz.new '/' }
 
-    let(:clazz) { HelloToWelcomeRedirect }
+  #   let(:clazz) { Controll::FlowHandler::Redirect }
 
-    context 'has redirections' do
-      describe '.action event' do
-        specify do
-          expect { clazz.action(:hello) }.to_not raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
-        end
+  #   let(:hello) { notification :hello }
 
-        specify do
-          clazz.action(:hello).should be_a HelloToWelcomeRedirect
-        end
+  #   describe '.action event' do
+  #     specify do
+  #       expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
+  #     end
+  #   end
+  # end
 
-        specify do
-          clazz.action(:hi).path.should == 'welcome'
-        end
-      end
-    end
-  end
+  # context 'HelloToWelcomeRedirect subclass' do
+  #   subject { clazz.new '/' }
+
+  #   let(:clazz) { HelloToWelcomeRedirect }
+
+  #   context 'has redirections' do
+  #     describe '.action event' do
+  #       specify do
+  #         expect { clazz.action(:hello) }.to_not raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
+  #       end
+
+  #       specify do
+  #         clazz.action(:hello).should be_a HelloToWelcomeRedirect
+  #       end
+
+  #       specify do
+  #         clazz.action(:hi).path.should == 'welcome'
+  #       end
+  #     end
+  #   end
+  # end
 
   context 'ErrorBadRedirect subclass' do
     subject { clazz.new '/' }

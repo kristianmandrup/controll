@@ -5,6 +5,7 @@ module Controll
     autoload :Params,       'controll/helper/params'
     autoload :Session,      'controll/helper/session'
     autoload :PathResolver, 'controll/helper/path_resolver'
+    autoload :EventMatcher, 'controll/helper/event_matcher'
 
     include Controll::Helper::Notify
     include Controll::Helper::Params

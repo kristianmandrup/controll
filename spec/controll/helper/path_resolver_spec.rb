@@ -3,9 +3,9 @@ require 'spec_helper'
 class MySweetController
   include Controll::Helper
 
-  redirect_map :index => %w{alpha beta}
+  redirect_map :index => %w{success}
 
-  render_map :show => %w{car boat}
+  render_map :show => %w{success}
 
   # Mocking!
   def render path
@@ -22,28 +22,27 @@ describe Controll::Helper::PathResolver do
   describe '.extract_path' do
     describe ':redirect_map' do
       specify do
-        subject.extract_path :redirect_map
+        subject.extract_path(:redirect_map).should == 'index'
       end
     end
 
     describe ':render_paths' do
       specify do
-        subject.extract_path :render_paths
+        subject.extract_path(:render_paths).should == 'show'
       end
     end
   end
 
-
   describe '.resolve_path' do
     describe ':redirect_map' do
       specify do
-        subject.resolve_path :redirect_map
+        subject.resolve_path(:redirect_map).should == 'index'
       end
     end
 
     describe ':render_paths' do
       specify do
-        subject.resolve_path :render_paths
+        subject.resolve_path(:render_paths).should == 'show'
       end
     end
   end

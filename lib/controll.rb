@@ -3,6 +3,7 @@ end
 
 require 'hashie'
 require 'imperator-ext'
+require 'controll/errors'
 require 'controll/executor'
 require 'controll/notify'
 require 'controll/flow_handler'
