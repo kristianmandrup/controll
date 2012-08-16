@@ -32,7 +32,7 @@ describe Controll::FlowHandler::Render do
 
     describe '.action event' do
       specify do
-        expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::Render::NoEventsDefinedError)
+        expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::NoEventsDefinedError)
       end
     end
   end
@@ -45,7 +45,7 @@ describe Controll::FlowHandler::Render do
     context 'empty events' do
       describe '.action event' do
         specify do
-          expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::Render::NoEventsDefinedError)
+          expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::NoEventsDefinedError)
         end
       end
     end

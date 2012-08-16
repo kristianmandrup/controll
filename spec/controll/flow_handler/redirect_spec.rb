@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'spec_helper'
-
 class HelloToWelcomeRedirect < Controll::FlowHandler::Redirect
   set_redirections :welcome => [:hello, :hi]
 end
@@ -26,11 +24,15 @@ describe Controll::FlowHandler::Redirect do
     end
 
     specify {
-      ErrorBadRedirect.redirections(:error).should == {crap: ['bad_payment', 'wrong_payment']}
+      ErrorBadRedirect.redirections_for(:error).should == {crap: ['bad_payment', 'wrong_payment']}
+    }
+
+    specify {
+      ErrorBadRedirect.redirections.should == {error: {crap: ['bad_payment', 'wrong_payment']} }
     }
   end
 
-  # context 'use directly without sublclassing' do
+  # context 'use directly without subclassing' do
   #   subject { clazz.new '/' }
 
   #   let(:clazz) { Controll::FlowHandler::Redirect }
@@ -74,7 +76,7 @@ describe Controll::FlowHandler::Redirect do
     context 'has error redirections' do
       describe '.action event' do
         specify do
-          expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
+          expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::NoRedirectionFoundError)
         end
 
         specify do
@@ -82,7 +84,7 @@ describe Controll::FlowHandler::Redirect do
         end
 
         specify do
-          clazz.action(error :wrong_payment).path.should == 'bad'
+          clazz.action(error :wrong_payment).path.should == 'crap'
         end
       end
     end

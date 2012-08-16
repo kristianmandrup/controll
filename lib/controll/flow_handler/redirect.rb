@@ -1,21 +1,12 @@
 require 'controll/flow_handler/base'
 
 module Controll::FlowHandler
-  class Redirect < Base
-    class NoRedirectionFoundError < StandardError; end
-
+  class Redirect < Base    
     autoload :Action, 'controll/flow_handler/redirect/action'
+    autoload :Mapper, 'controll/flow_handler/redirect/mapper'
 
-    def initialize path, maps = nil
+    def initialize path
       super path
-      return if maps.blank?
-
-      # try to set redirect mappings if passed as 2nd arg
-      class_eval do
-        redirect_maps.each do |name|
-          send("#{name}=", maps[name]) if send(name)
-        end
-      end
     end
 
     def perform controller
@@ -23,17 +14,19 @@ module Controll::FlowHandler
     end
 
     class << self
-      attr_writer :redirections, :redirect_maps
+      attr_accessor :redirections
+      attr_writer   :redirect_maps, :action_clazz
 
       def action event
-        Action.new(event).create
+        path = action_clazz.new(event, redirections, types).map
+        self.new path unless path.blank?
       end
 
-      def redirect_maps
-        @redirect_maps ||= [:notice, :error]
+      def types
+        @types ||= [:notice, :error]
       end
 
-      def redirections type = :notice
+      def redirections_for type = :notice
         @redirections ||= {}
         @redirections[type.to_sym] || {}
       end
@@ -44,11 +37,15 @@ module Controll::FlowHandler
         @redirections[type.to_sym] = args.first
       end 
 
-      def set_redirect_maps *args, &block
-        (class << self; self; end).send :define_method, :redirect_maps do 
-          block_given? ? yield : args.flatten
-        end
-      end       
+      def set_types *names
+        @redirect_maps ||= names.flatten
+      end  
+
+      protected
+
+      def action_clazz
+        @action_clazz ||= Controll::FlowHandler::Redirect::Action
+      end
     end
   end
  end

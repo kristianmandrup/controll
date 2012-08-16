@@ -17,9 +17,10 @@ module Controll::FlowHandler
 
     class << self
       def action event, path = nil
-        raise NoEventsDefinedError, "You must define a #{self}#events class method that returns a render map" unless respond_to?(:events)
-        raise NoEventsDefinedError, "The #{self}#events class method must return a render map, was #{events}" if events.blank?      
-        self.new(path || default_path) if events.include? event_name_of(event)
+        raise Controll::FlowHandler::NoEventsDefinedError, "You must define a #{self}#events class method that returns a render map" unless respond_to?(:events)
+        raise Controll::FlowHandler::NoEventsDefinedError, "The #{self}#events class method must return a render map, was #{events}" if events.blank?      
+        event = normalize event
+        self.new(path || default_path) if events.include? event.name
       end
 
       def default_path
@@ -41,6 +42,10 @@ module Controll::FlowHandler
           block_given? ? yield : args.flatten
         end
       end 
+
+      protected
+
+      include Controll::FlowHandler::EventHelper      
     end
   end
 end

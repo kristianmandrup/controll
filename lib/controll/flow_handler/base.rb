@@ -14,14 +14,6 @@ module Controll::FlowHandler
       def action event
         raise NotImplementedError, 'You must implement the #action class method'
       end
-
-      def event_name_of event
-        event.respond_to?(:name) ? event.name.to_sym : event
-      end    
-
-      def event_type_of event
-        event.respond_to?(:type) ? event.type.to_sym : :notice
-      end
     end
   end
 end
