@@ -6,6 +6,10 @@ module Controll
       @controller = controller
       @options = options
     end
+
+    def self.controller_methods *names
+      delegate names, to: controller
+    end
   end
 end
 

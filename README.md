@@ -1,14 +1,24 @@
 # Controll
 
-Some nice and nifty utilities to help you manage complex controller logic. 
+Some nice and nifty utilities to help you manage complex controller logic.
+
+## Requirements
+
+This gem is designed for Rails 3+ and currently only supports (has been tested with)  Ruby 1.9+. The gem is under development but stable releases will be pushed to rubygems. Note that older versions may not support the same API described in the README. Go back in history and/or browse the code for that specific version.
+
+Enjoy :)
 
 ## Background
 
-This gem contains logic extracted from my `oauth_assist` gem/engine which again was a response to this article [oauth pure tutorial](http://www.communityguides.eu/articles/16).
+This gem contains logic extracted from my [oauth_assist](https://github.com/kristianmandrup/oauth_assist) gem (and engine) which was a response to this article [oauth pure tutorial](http://www.communityguides.eu/articles/16).
+
+Note that the *oauth_assist* gem is not yet fully functional and done, as it "awaits" a stable release of this gem. Please feel free to help out in this effort!
 
 ## Justification
 
-As you can see, the following `#create` REST action is a nightmare of complexity and flow control leading to various different flash messages and redirect/render depending on various outcomes... there MUST be a better way!
+As you can see, the following `#create` REST action is a nightmare of complexity and flow control leading to various different flash messages and redirect/render depending on various outcomes... 
+
+Then I naturally thought: *There MUST be a better way!*
 
 ```ruby
 def create
@@ -130,15 +140,15 @@ class ServicesController < ApplicationController
 end
 ```
 
-The Commander is where you register a set of related commands, typically for a specific controller.
+The Commander is your command center for a group of related commands. Typically you will want to define a Commander for a specific controller if the controller has more than 3 commands.
 
 ```ruby
 module Commanders
   class Services < Commander
+    # create basic command methods
+    command_methods :cancel_commit, :create_account, :signout
 
-    # register commands with controller
-    commands :cancel_commit, :create_account, :signout
-
+    # create custom command method with custom argument hash
     def sign_in_command
       @sign_in_command ||= SignInCommand.new auth_hash: auth_hash, user_id: user_id, service_id: service_id, service_hash: service_hash, initiator: self
     end
@@ -147,7 +157,7 @@ module Commanders
       @sign_out_command ||= SignOutCommand.new user_id: user_id, service_id: service_id, service_hash: service_hash, initiator: self
     end
 
-    # delegations
+    # delegations (alias for initiator_methods )
     controller_methods :auth_hash, :user_id, :service_id, :service_hash
   end
 end
@@ -155,7 +165,7 @@ end
 
 The `#commands` class macro can be used to create command methods that only take the initiator (in this case the controller) as argument.
 
-For how to implement the commands, see the `imperator` gem, or see the `oauth_assist` engine for a full example. There are now also nice macros available for creating command methods! The `Commander class extends `Imperator::Command::MethodFactory` making `#command_method` available-
+For how to implement the commands, see the `imperator` gem, or see the `oauth_assist` engine for a full example. There are now also nice macros available for creating command methods! The `Commander class extends `Imperator::Command::MethodFactory` making `#command_method` and `#command_methods` available.
 
 We will implement this Notifier later when we know which notifications and errors we want to use/issue.
 
@@ -194,6 +204,8 @@ module FlowHandlers
 end
 ```
 
+The `#renderer` and `#redirector` macros will each create a Class of the same name that inherits from Controll::FlowHandler::Redirector or Controll::FlowHandler::Renderer respectively. You can of course also define these classes directly yourself instead of using the macros.
+
 In the `Redirect` class we are setting up a mapping for various path, specifying which notifications/event should cause a redirect to that path.
 
 If you are rendering or redirecting to paths that take arguments, you can either extend the `#action` class method of your Redirect or Render class implementation or you can define a `#use_alternatives` method in your `FlowHandler` that contains this particular flow logic. You can also use the `#use_fallback` method for this purpose.
@@ -225,17 +237,17 @@ module Executors
 end
 ```
 
-To encapsulate more complex busines logic affecting the user Session or Model data, we execute an the Imperator Command (see `imperator` gem) called :sign_in that we registered in the Commander of the Controller.
+To encapsulate more complex busines logic affecting the user Session or Model data, we execute an Imperator Command (see `imperator` gem) called :sign_in that we registered in the Commander of the Controller.
 
 ## Notifier
 
-Now we are finally ready to define the message handler for each notification event we have defined (this should ideally be done as you define each event!).
+Now we are finally ready to define the notifier to handle the different types of notification events.
 
 The example below demonstrates several different ways you can define messages for events: 
 
 * using the `#messages` method to return a hash of mappings. 
-* define a method for the event name that returns a String (w argument replacement)
-* i18n locale mapping [msghandler name].[notification type].[event name].
+* define a method for the event name that returns a String (handles argument replacement)
+* i18n locale mapping `[handler class path].[notification type].[event name]`.
 
 ```ruby
 module Notifiers
@@ -265,7 +277,6 @@ You have not been signed in.},
 
     handler :notice do
       # for :signed_in and :signed_out - defined in locale file under:
-
       # notifiers:
       #   services:
       #     notice:
@@ -288,6 +299,14 @@ You have not been signed in.},
 end
 ```
 
+## Rails Generators
+
+`$ rails g controll:setup`
+
+Generate only specific controll folders
+
+`$ rails g controll:setup commanders notifiers`
+
 ## Contributing to controll
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
@@ -298,7 +317,7 @@ end
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
 * Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
 
-== Copyright
+## Copyright
 
 Copyright (c) 2012 Kristian Mandrup. See LICENSE.txt for
 further details.

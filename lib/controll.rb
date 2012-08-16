@@ -12,3 +12,4 @@ require 'controll/command'
 require 'controll/commander'
 require 'controll/assistant'
 
+require 'controll/engine' if defined?(::Rails::Engine)

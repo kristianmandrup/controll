@@ -4,10 +4,10 @@ module Controll
     # makes #command_method available
     extend Imperator::Command::MethodFactory
 
-    attr_reader :controller, :options
+    attr_reader :initiator, :options
 
-    def initialize controller, options = {}
-      @controller = controller
+    def initialize initiator, options = {}
+      @initiator = initiator
       @options = options
     end
 
@@ -20,6 +20,15 @@ module Controll
     end
     alias_method :use_command, :command!
     alias_method :perform_command, :command!
+
+    alias_method :controller, :initiator
+
+    class << self
+      def initiator_methods *names
+        delegate names, to: :initiator
+      end    
+      alias_method :controller_methods, :initiator_methods
+    end
   end
 end
 
