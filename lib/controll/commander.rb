@@ -22,3 +22,7 @@ module Controll
     alias_method :perform_command, :command!
   end
 end
+
+module Commanders
+  Commander = Controll::Commander
+end

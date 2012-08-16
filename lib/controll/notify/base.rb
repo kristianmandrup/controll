@@ -16,10 +16,8 @@ module Controll
       end
 
       module ClassMethods
-        attr_reader :signal_type
-
-        def type name
-          @signal_type = name
+        def signal_type
+          self.name.demodulize.sub(/Handler$/, '').underscore.to_sym
         end
       end
 
@@ -32,17 +30,14 @@ module Controll
         msg ||= messages[name.to_sym] if respond_to? :messages
         msg ||= name.to_sym
 
-        # if name is not mapped to a message, it could well be, that the 
-        # event should not generate a nofification message
-        return nil if !msg
+        message = create_message msg, opts
                 
         # try various approaches!
         case msg
         when Symbol
-          translate msg, opts
+          translate message
         when String
-          msg.strip!
-          return replace_args(msg, opts) if msg =~ /{{.*}}/
+          return replace_args(message) if msg =~ /{{.*}}/
           msg
         else
           msg_error!
@@ -54,22 +49,18 @@ module Controll
         raise NotifyMappingError, "Notify message could not be generated for: #{name}"
       end
 
-      def translate msg, opts = {}
-        I18n.t i18n_key(msg), opts.symbolize_keys
-      end
-
-      def replace_args msg, opts
+      def replace_args message
          # Parses and compiles the template
-        Liquid::Template.parse(msg).render(opts)
+        Liquid::Template.parse(message.text).render(message.options)
       end
 
-      def i18n_key msg
-        parts = self.class.name.split('::')
-        middle = parts[1..-2].join('.').underscore
-        type = parts.last.sub(/Msg$/, '').underscore
-        ns = [middle, type].join('.').sub /^./, ''
-        [ns,msg].join('.')
-      end        
+      def translate message     
+        translator(message).translate
+      end
+
+      def translator message
+        Controll::Notify::Translator.new self, message
+      end
     end
   end
 end

@@ -1,7 +1,7 @@
 require 'controll/flow_handler/base'
 
 module Controll::FlowHandler
-  class Redirect < Base    
+  class Redirecter < Base    
     autoload :Action, 'controll/flow_handler/redirect/action'
     autoload :Mapper, 'controll/flow_handler/redirect/mapper'
 
@@ -10,36 +10,35 @@ module Controll::FlowHandler
     end
 
     def perform controller
+      raise BadPathError, "Bad path: #{path}" if path.blank?
       controller.do_redirect controller.send(path)
     end
 
     class << self
-      attr_accessor :redirections
-      attr_writer   :redirect_maps, :action_clazz
+      attr_writer :action_clazz
+      attr_reader :types
 
       def action event
         path = action_clazz.new(event, redirections, types).map
         self.new path unless path.blank?
       end
 
-      def types
-        @types ||= [:notice, :error]
-      end
-
+      # reader
       def redirections_for type = :notice
         @redirections ||= {}
         @redirections[type.to_sym] || {}
       end
 
-      def set_redirections *args
-        type = args.first.kind_of?(Symbol) ? args.shift : :notice
+      # writer
+      # also auto-adds type to types
+      def redirections *args, &block
         @redirections ||= {}
-        @redirections[type.to_sym] = args.first
-      end 
+        return @redirections if args.empty? && !block_given?
 
-      def set_types *names
-        @redirect_maps ||= names.flatten
-      end  
+        type = args.first.kind_of?(Symbol) ? args.shift : :notice        
+        @redirections[type.to_sym] = block_given? ? yield : args.first
+        @types << type unless types.include?(type)
+      end 
 
       protected
 

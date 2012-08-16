@@ -20,7 +20,7 @@ module Controll
         attr_writer :types
 
         def types
-          @types ||= [:notice, :error, :warning, :success]
+          @types ||= TYPES
         end
 
         def add_types *types

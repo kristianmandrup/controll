@@ -18,8 +18,8 @@ module Controll
       # TODO: refactor - all use exactly the same pattern - can be generated!
       def commander name, options = {}
         define_method :commander do
-          unless instance_variable_get("@commander")
-            clazz = "#{name.to_s.camelize}Commander".constantize        
+          instance_variable_get("@commander") || begin
+            clazz = "Commanders::#{name.to_s.camelize}".constantize        
             instance_variable_set "@commander", clazz.new(self, options)
           end
         end
@@ -27,8 +27,8 @@ module Controll
 
       def message_handler name, options = {}
         define_method :message_handler do
-          unless instance_variable_get("@message_handler")
-            clazz = "#{name.to_s.camelize}MessageHandler".constantize        
+          instance_variable_get("@message_handler") || begin
+            clazz = "Notifiers::#{name.to_s.camelize}".constantize        
             instance_variable_set "@message_handler", clazz.new(self, options)
           end
         end
@@ -37,7 +37,7 @@ module Controll
       def assistant name, options = {}
         define_method :assistant do
           unless instance_variable_get("@assistant")
-            clazz = "#{name.to_s.camelize}Assistant".constantize        
+            clazz = "Assistants::#{name.to_s.camelize}".constantize        
             instance_variable_set "@assistant", clazz.new(self, options)
           end
         end
@@ -46,17 +46,8 @@ module Controll
       def flow_handler name, options = {}
         define_method :flow_handler do
           unless instance_variable_get("@flow_handler")
-            clazz = "#{name.to_s.camelize}FlowHandler".constantize        
+            clazz = "FlowHandlers::#{name.to_s.camelize}".constantize        
             instance_variable_set "@flow_handler", clazz.new(self, options)
-          end
-        end
-      end
-
-      def delegate_assistant name, options = {}
-        define_method :assistant do
-          unless instance_variable_get("@assistant")
-            clazz = "#{name.to_s.camelize}DelegateAssistant".constantize        
-            instance_variable_set "@assistant", clazz.new(self, options)
           end
         end
       end

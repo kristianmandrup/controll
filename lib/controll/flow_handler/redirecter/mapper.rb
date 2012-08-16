@@ -1,7 +1,9 @@
 module Controll::FlowHandler
-  class Redirect < Base
+  class Redirecter < Base
     class Mapper
       attr_reader :redirect_map, :event
+
+      NoRedirectionFoundError = Controll::FlowHandler::NoRedirectionFoundError
 
       def initialize event, redirect_map
         @event ||= normalize event
@@ -18,7 +20,7 @@ module Controll::FlowHandler
         redirect_map.each do |path, events|            
           return path.to_s if valid? events
         end
-        raise Controll::FlowHandler::NoRedirectionFoundError, "No path could be found for event: #{event} in map: #{redirect_map}" 
+        raise NoRedirectionFoundError, "No path could be found for event: #{event} in map: #{redirect_map}" 
       end
 
       protected

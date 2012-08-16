@@ -3,36 +3,27 @@ require 'controll/notify/flash'
 module Controll
   module Notify
     class Typed < Flash
-      class MissingNotifyClass < StandardError; end
+      class MissingNotifyHandlerClass < StandardError; end
 
-      def notice        
-        raise MissingNotifyClass, "#{msg_class(:notice)} class missing" unless msg_class(:notice)
-        @notice ||= msg_class(:notice).new flash #, options
-      end
+      include Controll::Notify::Macros
 
-      def error
-        raise MissingNotifyClass, "#{msg_class(:warning)} class missing" unless msg_class(:error)
-        @error ||= msg_class(:error).new flash #, options
-      end
-
-      def success
-        raise MissingNotifyClass, "#{msg_class(:success)} class missing" unless msg_class(:success)
-        @success ||= msg_class(:success).new flash #, options
-      end
-
-      def warning
-        raise MissingNotifyClass, "#{msg_class(:warning)} class missing" unless msg_class(:warning)
-        @warning ||= msg_class(:warning).new flash #, options
+      types.each do |type|      
+        define_method type do        
+          clazz = handler_class(type)
+          raise MissingNotifyHandlerClass, "#{clazz} class missing" unless clazz
+          var = "@#{type}"
+          instance_variable_get(var) || instance_variable_set(var, clazz.new flash)
+        end
       end
 
       protected
 
-      def msg_class name
-        msg_classes[name] ||= "#{self.class}::#{name.to_s.camelize}Msg".constantize
+      def handler_class name
+        handler_classes[name] ||= "#{self.class}::#{name.to_s.camelize}Handler".constantize
       end 
 
-      def msg_classes
-        @msg_classes ||= {}
+      def handler_classes
+        @handler_classes ||= {}
       end
     end
   end

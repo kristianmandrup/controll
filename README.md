@@ -112,7 +112,7 @@ class ApplicationController
 end
 ```
 
-In your Controller you should define a MessageHandler and Commander to be used.
+In your Controller you should define a Notifier and Commander to be used.
 
 ```ruby
 class ServicesController < ApplicationController
@@ -122,73 +122,65 @@ class ServicesController < ApplicationController
 
   protected
 
-  message_handler :services
+  notifier :services
   commander :services
+
+  # or simply
+  controll :notifier, :commander
 end
 ```
 
 The Commander is where you register a set of related commands, typically for a specific controller.
 
 ```ruby
-class ServicesCommander < Controll::Commander
+module Commanders
+  class Services < Commander
 
-  # register commands with controller
-  commands :cancel_commit, :create_account, :signout
+    # register commands with controller
+    commands :cancel_commit, :create_account, :signout
 
-  def sign_in_command
-    @sign_in_command ||= SignInCommand.new auth_hash: auth_hash, user_id: user_id, service_id: service_id, service_hash: service_hash, initiator: self
+    def sign_in_command
+      @sign_in_command ||= SignInCommand.new auth_hash: auth_hash, user_id: user_id, service_id: service_id, service_hash: service_hash, initiator: self
+    end
+
+    command_method :sign_out do
+      @sign_out_command ||= SignOutCommand.new user_id: user_id, service_id: service_id, service_hash: service_hash, initiator: self
+    end
+
+    # delegations
+    controller_methods :auth_hash, :user_id, :service_id, :service_hash
   end
-
-  # delegations
-  controller_methods :auth_hash, :user_id, :service_id, :service_hash
 end
 ```
 
 The `#commands` class macro can be used to create command methods that only take the initiator (in this case the controller) as argument.
 
-For how to implement the commands, see the `imperator` gem, or see the `oauth_assist` engine for a full example.
+For how to implement the commands, see the `imperator` gem, or see the `oauth_assist` engine for a full example. There are now also nice macros available for creating command methods! The `Commander class extends `Imperator::Command::MethodFactory` making `#command_method` available-
 
-We will implement this MessageHandler later when we know which notifications and errors we want to use/issue.
+We will implement this Notifier later when we know which notifications and errors we want to use/issue.
+
+## FlowHandlers
 
 For Controller actions that require complex flow control, use a FlowHandler:
 
 ```ruby
-module Controll::FlowHandler
+module FlowHandlers
   class CreateService < Control
-    protected
-
-    # use for more advanced render/redirect logic (fx when using paths with arguments)
-    def use_alternatives      
-    end
-
-    def use_fallback
+    fallback do
       event == :no_auth ? do_render(:text => omniauth.to_yaml) : fallback_action
     end      
 
-    def action_handlers
-      [Redirect, Render]
+    event do
+      Executors::Authenticator.new(controller).execute
     end
 
-    def event
-      @event ||= authentication
+    renderer do
+      default_path :signup_services_path
+      events       :signed_in_new_user, :signed_in
     end
 
-    def authentication
-      @authentication ||= Authenticator.new(controller).execute
-    end
-
-    class Render < Controll::FlowHandler::Render
-      def self.default_path
-        :signup_services_path
-      end
-
-      def self.events
-        [:signed_in_new_user]
-      end
-    end
-
-    class Redirect < Controll::FlowHandler::Render
-      def self.redirections
+    redirecter do
+      redirections :notice do
         {        
           signup_services_path: :signed_in_new_user
           services_path:        [:signed_in_connect, :signed_in_new_connect]
@@ -196,11 +188,7 @@ module Controll::FlowHandler
         }
       end
 
-      def self.error_redirections
-        {
-          signin_path:          [:error, :invalid, :auth_error]
-        }
-      end
+      redirections :error, signin_path: [:error, :invalid, :auth_error]
     end  
   end
 end
@@ -215,7 +203,7 @@ If you are rendering or redirecting to paths that take arguments, you can either
 The `Authenticator` inherits from `Executor::Notificator` which uses `#method_missing` in order to delegate any missing method back to the initiator of the Executor, in this case the FlowHandler. The `#result` call at the end of `#execute` ensures that the last notification event is returned, to be used for deciding what to render or where to redirect (see FlowHandler).
 
 ```ruby
-module Controll::Executor
+module Executors
   class Authenticator < Notificator
     def execute
       # creates an error notification named :error
@@ -250,12 +238,10 @@ The example below demonstrates several different ways you can define messages fo
 * i18n locale mapping [msghandler name].[notification type].[event name].
 
 ```ruby
-module Controll::Notify
+module Notifiers
   class Services < Typed
-    class ErrorMsg < Controll::Notify::Base
-      type :error
-
-      def messages
+    handler :error do
+      messages do
         {
           must_sign_in: 'You need to sign in before accessing this page!',
           
@@ -267,35 +253,34 @@ You have not been signed in.},
         }
       end
 
-      def auth_error!
-        'Error while authenticating via ' + service_name + '. The service did not return valid data.'
+      msg :auth_error! do
+        "Error while authenticating via #{service_name}. The service did not return valid data."
       end
 
-      def auth_invalid!
+      msg :auth_invalid! do
         'Error while authenticating via {{full_route}}. The service returned invalid data for the user id.'
       end
     end
 
 
-    class NoticeMsg < Controll::Notify::Base
-      type :notice
-
+    handler :notice do
       # for :signed_in and :signed_out - defined in locale file under:
 
-      # services:
-      #   notice:
-      #     signed_in:  'Your account has been created and you have been signed in!'
-      #     signed_out: 'You have been signed out!'
+      # notifiers:
+      #   services:
+      #     notice:
+      #       signed_in:  'Your account has been created and you have been signed in!'
+      #       signed_out: 'You have been signed out!'
 
-      def already_connected
+      msg :already_connected do
         'Your account at {{provider_name}} is already connected with this site.'
       end
 
-      def account_added
+      msg :account_added do
         'Your {{provider_name}} account has been added for signing in at this site.'
       end
 
-      def sign_in_success
+      msg :sign_in_success do
         'Signed in successfully via {{provider_name}}.'
       end
     end

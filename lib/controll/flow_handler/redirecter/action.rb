@@ -1,7 +1,9 @@
 module Controll::FlowHandler
-  class Redirect < Base
+  class Redirecter < Base
     class Action
       attr_accessor :event, :redirections, :types
+
+      NoRedirectionFoundError = Controll::FlowHandler::NoRedirectionFoundError
 
       # event is a Hashie::Mash or simply a Symbol (default notice event)
       def initialize event, redirections, types = []
@@ -14,7 +16,7 @@ module Controll::FlowHandler
 
       def map        
         if redirect.blank?
-          raise Controll::FlowHandler::NoRedirectionFoundError, "No redirection could be found for: #{event} in: #{redirections}"
+          raise NoRedirectionFoundError, "No redirection could be found for: #{event} in: #{redirections}"
         end
         redirect        
       end
@@ -26,7 +28,7 @@ module Controll::FlowHandler
       def redirect
         @redirect ||= mapper(redirect_map).map 
       rescue StandardError => e
-        raise Controll::FlowHandler::NoRedirectionFoundError, "No redirection could be found for: #{event} in: #{redirections}. Cause: #{e}"
+        raise NoRedirectionFoundError, "No redirection could be found for: #{event} in: #{redirections}. Cause: #{e}"
       end
 
       def redirect_map
