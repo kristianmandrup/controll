@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "controll"
-  s.version = "0.1.1"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = "2012-08-15"
+  s.date = "2012-08-16"
   s.description = "FlowHandler, Executor, Notifier and more, all tied together tool pack"
   s.email = "kmandrup@gmail.com"
   s.extra_rdoc_files = [
@@ -30,15 +30,21 @@ Gem::Specification.new do |s|
     "lib/controll/assistant.rb",
     "lib/controll/command.rb",
     "lib/controll/commander.rb",
+    "lib/controll/errors.rb",
     "lib/controll/executor.rb",
     "lib/controll/executor/base.rb",
     "lib/controll/executor/notificator.rb",
     "lib/controll/flow_handler.rb",
     "lib/controll/flow_handler/base.rb",
     "lib/controll/flow_handler/control.rb",
+    "lib/controll/flow_handler/errors.rb",
+    "lib/controll/flow_handler/event_helper.rb",
     "lib/controll/flow_handler/redirect.rb",
+    "lib/controll/flow_handler/redirect/action.rb",
+    "lib/controll/flow_handler/redirect/mapper.rb",
     "lib/controll/flow_handler/render.rb",
     "lib/controll/helper.rb",
+    "lib/controll/helper/event_matcher.rb",
     "lib/controll/helper/hash_access.rb",
     "lib/controll/helper/notify.rb",
     "lib/controll/helper/params.rb",
@@ -110,8 +116,11 @@ Gem::Specification.new do |s|
     "spec/controll/commander_spec.rb",
     "spec/controll/executor/notificator_spec.rb",
     "spec/controll/flow_handler/control_spec.rb",
+    "spec/controll/flow_handler/redirect/action_spec.rb",
+    "spec/controll/flow_handler/redirect/mapper_spec.rb",
     "spec/controll/flow_handler/redirect_spec.rb",
     "spec/controll/flow_handler/render_spec.rb",
+    "spec/controll/helper/event_matcher_spec.rb",
     "spec/controll/helper/hash_access_spec.rb",
     "spec/controll/helper/notify_spec.rb",
     "spec/controll/helper/params_spec.rb",
