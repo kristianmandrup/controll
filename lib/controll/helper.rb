@@ -25,11 +25,11 @@ module Controll
         end
       end
 
-      def message_handler name, options = {}
-        define_method :message_handler do
-          instance_variable_get("@message_handler") || begin
+      def notifier name, options = {}
+        define_method :notifier do
+          instance_variable_get("@notifier") || begin
             clazz = "Notifiers::#{name.to_s.camelize}".constantize        
-            instance_variable_set "@message_handler", clazz.new(self, options)
+            instance_variable_set "@notifier", clazz.new(self, options)
           end
         end
       end

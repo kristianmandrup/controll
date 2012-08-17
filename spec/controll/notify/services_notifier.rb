@@ -1,4 +1,4 @@
-module MessageHandler
+module Notifiers
   class Services < Controll::Notify::Typed
     class Base < Controll::Notify::Base
       def provider_name
@@ -14,7 +14,7 @@ module MessageHandler
       end
     end
 
-    class ErrorMsg < Base
+    class ErrorHandler < Base
       type :error
 
       def messages
@@ -42,9 +42,7 @@ You have not been signed in.},
       end
     end
 
-    class NoticeMsg < Base
-      type :notice
-
+    class NoticeHandler < Base
       # for :signed_in and :signed_out - defined in locale file under:
 
       # services:

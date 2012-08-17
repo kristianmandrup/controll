@@ -51,12 +51,6 @@ describe Controll::Notify::Base do
     end
   end
 
-  describe 'notify_msg - messages map' do
-    specify do
-      subject.send(:notify_msg, :must_sign_in).should == sign_in_msg
-    end
-  end
-
   context 'I18n message' do
     # services:
     #   notice:
@@ -85,13 +79,13 @@ describe Controll::Notify::Base do
   end
 
   context 'Variable substitution' do
-    context 'method calls' do
-      let(:auth_error_msg) { 'Error while authenticating via facebook. The service did not return valid data.' }
+    # context 'method calls' do
+    #   let(:auth_error_msg) { 'Error while authenticating via facebook. The service did not return valid data.' }
 
-      specify do
-        subject.notify('auth_error!').should == auth_error_msg
-      end      
-    end
+    #   specify do
+    #     subject.notify('auth_error!').should == auth_error_msg
+    #   end      
+    # end
 
     context 'Liquid templates with args' do      
       let(:auth_error_msg) { 'Error while authenticating via www.facebook.com/login. The service returned invalid data for the user id.' }

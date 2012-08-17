@@ -299,6 +299,10 @@ You have not been signed in.},
 end
 ```
 
+The Notifier infrastructure consists of the following classes:
+
+* 
+
 ## Rails Generators
 
 `$ rails g controll:setup`

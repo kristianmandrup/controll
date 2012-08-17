@@ -1,14 +1,16 @@
-require 'liquid'
 require 'controll/notify/flash'
 
 module Controll
   module Notify
     class Base < Flash
-      class NotifyMappingError < StandardError; end
+      Message = Controll::Notify::Message
+
+      attr_reader :name
 
       def notify name, options = {}      
-        @options.merge! options if options.kind_of? Hash
-        signal notify_msg(name)
+        @options.merge! options
+        @name = name
+        signal message_resolver.resolve
       end
 
       def self.inherited(base)
@@ -17,49 +19,35 @@ module Controll
 
       module ClassMethods
         def signal_type
-          self.name.demodulize.sub(/Handler$/, '').underscore.to_sym
+          @signal_type ||= self.name.demodulize.sub(/Handler$/, '').underscore.to_sym
+        end
+
+        def type name
+          @signal_type = name
         end
       end
 
       protected
 
-      def notify_msg name, opts = {}
-        opts = options.merge(opts).stringify_keys
-
-        msg = send(name) if respond_to? name
-        msg ||= messages[name.to_sym] if respond_to? :messages
-        msg ||= name.to_sym
-
-        message = create_message msg, opts
-                
-        # try various approaches!
-        case msg
-        when Symbol
-          translate message
-        when String
-          return replace_args(message) if msg =~ /{{.*}}/
-          msg
-        else
-          msg_error!
-        end
-      rescue
+      def message_resolver
+        @message_resolver ||= Message::Resolver.new self, message
       end
 
-      def msg_error!
-        raise NotifyMappingError, "Notify message could not be generated for: #{name}"
+      def message
+        @message ||= Message.new text, options
+      end      
+
+      def text
+        @text ||= resolve_text(name) || key
       end
 
-      def replace_args message
-         # Parses and compiles the template
-        Liquid::Template.parse(message.text).render(message.options)
+      def key
+        @key ||= name.to_sym
       end
 
-      def translate message     
-        translator(message).translate
-      end
-
-      def translator message
-        Controll::Notify::Translator.new self, message
+      def resolve_text name
+        return send(name) if respond_to? name
+        messages[name.to_sym] if respond_to? :messages
       end
     end
   end

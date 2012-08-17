@@ -32,7 +32,7 @@ module Controll::FlowHandler
         def event &block
           raise ArgumentError, "Must be called with a block" unless block_given?
           define_method :event do
-            instance_variable_get("@event") || instance_variable_set("@event", instance_eval &block)
+            instance_variable_get("@event") || instance_variable_set("@event", instance_eval(&block))
           end
         end
 

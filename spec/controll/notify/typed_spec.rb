@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'controll/notify/message_handler'
+require 'controll/notify/services_notifier'
 
 class MyController
   attr_reader :flash
@@ -10,7 +10,7 @@ class MyController
 end
 
 describe Controll::Notify::Typed do
-  subject { MessageHandler::Services.new controller }
+  subject { Notifiers::Services.new controller }
 
   let(:controller) { MyController.new }
 

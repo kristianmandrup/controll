@@ -12,7 +12,7 @@ module Controll
           clazz = handler_class(type)
           raise MissingNotifyHandlerClass, "#{clazz} class missing" unless clazz
           var = "@#{type}"
-          instance_variable_get(var) || instance_variable_set(var, clazz.new flash)
+          instance_variable_get(var) || instance_variable_set(var, clazz.new(flash))
         end
       end
 

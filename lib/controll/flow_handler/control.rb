@@ -33,6 +33,7 @@ module Controll::FlowHandler
         @action_handlers ||= []
         @action_handlers << name.to_s.underscore.to_sym
       end
+    end
 
     protected
 
