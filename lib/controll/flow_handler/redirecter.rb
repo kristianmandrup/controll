@@ -18,6 +18,12 @@ module Controll::FlowHandler
       attr_writer :action_clazz
       attr_reader :types
 
+      def inherited base
+        if base.parent.respond_to? :add_action_handler
+          base.add_action_handler self.name.demodulize
+        end
+      end
+
       def action event
         path = action_clazz.new(event, redirections, types).map
         self.new path unless path.blank?

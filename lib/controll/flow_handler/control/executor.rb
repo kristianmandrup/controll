@@ -1,28 +1,36 @@
 module Controll::FlowHandler
   class Control    
     class Executor < Controll::Executor::Base
-      NoEventsDefinedError    = Controll::FlowHandler::Render::NoEventsDefinedError
-      NoRedirectionFoundError = Controll::FlowHandler::Redirect::NoRedirectionFoundError    
+      NoEventsDefinedError    = Controll::FlowHandler::NoEventsDefinedError
+      NoRedirectionFoundError = Controll::FlowHandler::NoRedirectionFoundError    
 
-      def execute
-        errors = []
+      def initialize initiator, options = {}
+        super
+        # puts "options: #{options}"
+      end
+
+      def execute        
         action_handlers.each do |action_handler|
           begin          
             action_handler_clazz = handler_class(action_handler)
             next unless action_handler_clazz
-            action = action_handler_clazz.action(event)
-            execute_with action
-            return if executed?
+            return action_handler_clazz.action(event)
           rescue NoEventsDefinedError => e
             errors << e
           rescue NoRedirectionFoundError => e
             errors << e
           end
         end
-        raise ActionEventError, "#{errors.join ','}" unless errors.empty?
+        fallback        
+      end
+
+      def errors
+        @errors ||= []
       end
 
       protected
+
+      delegate :event, to: :initiator
 
       def action_handlers
         @action_handlers ||= options[:action_handlers]
@@ -33,12 +41,6 @@ module Controll::FlowHandler
         clazz.constantize
       rescue NameError
         nil
-      end
-
-      def execute_with action
-        return if !action
-        action.perform(controller)
-        executed!  
       end
 
       def executed? 

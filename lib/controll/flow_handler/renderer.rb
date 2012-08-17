@@ -16,8 +16,10 @@ module Controll::FlowHandler
     end
 
     class << self
-      def inherited(base)
-        base.parent.add_action_handler self.name.underscore
+      def inherited base
+        if base.parent.respond_to? :add_action_handler
+          base.add_action_handler self.name.demodulize
+        end
       end
 
       def action event, path = nil
@@ -54,7 +56,7 @@ module Controll::FlowHandler
         end
       end        
 
-      include Controll::FlowHandler::EventHelper      
+      include Controll::Event::Helper      
     end
   end
 end

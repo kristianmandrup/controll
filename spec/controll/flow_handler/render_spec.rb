@@ -13,7 +13,7 @@ class HiRender < Controll::FlowHandler::Render
 end
 
 class HelloRender < Controll::FlowHandler::Render
-  set_events :hello, :damn
+  events :hello, :damn
   set_default_path '/default'
 end
 

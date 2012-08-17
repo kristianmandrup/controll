@@ -6,6 +6,7 @@ module Controll
     autoload :Control,      'controll/flow_handler/control'
     autoload :Redirecter,   'controll/flow_handler/redirecter'
     autoload :Renderer,     'controll/flow_handler/renderer'    
+    autoload :Fallback,     'controll/flow_handler/fallback'        
     autoload :EventHelper,  'controll/flow_handler/event_helper'    
   end
 end

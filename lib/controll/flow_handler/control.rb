@@ -7,28 +7,31 @@ module Controll::FlowHandler
 
     include Macros
 
-    attr_reader :controller, :action_handlers
+    attr_reader :controller, :action
 
-    def initialize controller, action_handlers = []
+    def initialize controller
       @controller = controller
-      @action_handlers = action_handlers unless action_handlers.blank?
     end
 
+    # sets action to first action_handler that matches event
+    # returns self
     def execute
-      executor.execute
-      fallback if !executed?
-      self
+      return executor.execute
+    rescue StandardError
+      fallback
     end
 
     def executor
       @executor ||= Executor.new self, action_handlers: action_handlers
     end
 
-    def action_handlers
-      @action_handlers ||= []
-    end
+    delegate :executed?, to: :executor
 
     class << self
+      def action_handlers
+        @action_handlers ||= []
+      end
+
       def add_action_handler name
         @action_handlers ||= []
         @action_handlers << name.to_s.underscore.to_sym
@@ -37,14 +40,16 @@ module Controll::FlowHandler
 
     protected
 
+    attr_writer :action
+
     delegate :command!, to: :controller
+
+    def action_handlers
+      self.class.action_handlers
+    end
 
     def event
       raise NotImplementedError, 'You must define an #event method that at least returns an event (Symbol). You can use an Executor for this.'
-    end
-
-    def fallback_action
-      do_redirect root_url
     end
   end
 end

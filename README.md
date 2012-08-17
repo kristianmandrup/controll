@@ -94,7 +94,7 @@ end
 
 A `FlowHandler` can use Executors to encapsulate execution logic, which again can execute Commands that encapsulate business logic related to the user Session or models (data).
 
-The FlowHandler can manage Redirect, Render and Notifications in a standardized, much more Object Oriented fashion, which adheres to the Single Responsibility pattern.
+The FlowHandler can manage a Redirecter, Renderer and Notifier in a standardized, much more Object Oriented fashion, which adheres to the Single Responsibility pattern.
 
 Controll has built in notification management which work both for flash messages (or other types of notifications) and as return codes for use in flow-control logic.
 

@@ -14,6 +14,18 @@ module Controll
 
     delegate :command, :command!, :use_command, to: :commander
 
+    def execute      
+      action.perform(self)
+    end
+
+    def action
+      @action ||= executor.execute
+    end
+
+    def fallback_action
+      do_redirect root_url
+    end
+
     module ClassMethods
       # TODO: refactor - all use exactly the same pattern - can be generated!
       def commander name, options = {}

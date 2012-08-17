@@ -12,36 +12,39 @@ module MyController
   end
 end
 
-class EmptyEventFlowHandler < Controll::FlowHandler::Control
-  def event
-  end
-end
-
-class UpdateEventWithoutHandlerMapping < Controll::FlowHandler::Control
-  def event
-    :update
-  end
-end
-
-class UpdateEventFlowHandler < Controll::FlowHandler::Control
-  def event
-    :update
+module FlowHandlers
+  class EmptyEvent < Control
+    def event
+    end
   end
 
-  class Render < Controll::FlowHandler::Render
-    set_events :update
-    set_default_path 'default'
-  end
-end
-
-class UpdateEventNoMatchFlowHandler < Controll::FlowHandler::Control
-  def event
-    :update
+  class UpdateEventWithoutHandler < Control
+    def event
+      :update
+    end
   end
 
-  class Render < Controll::FlowHandler::Render
-    set_events :create
-    set_default_path '/default'
+
+  class UpdateEvent < Control
+    def event
+      :update
+    end
+
+    renderer do
+      events :update
+      default_path 'default'
+    end
+  end
+
+  class UpdateEventNoMatch < Control
+    def event
+      :update
+    end
+
+    renderer do
+      events :create
+      default_path '/default'
+    end
   end
 end
 
@@ -70,7 +73,7 @@ describe Controll::FlowHandler::Control do
   context 'A Control FlowHandler with empty #event method' do
     subject { flow_handler.new controller }
 
-    let(:flow_handler)  { EmptyEventFlowHandler }
+    let(:flow_handler)  { FlowHandlers::EmptyEvent }
     let(:controller)    { MyController::Update.new }
 
     describe '.initialize' do
@@ -94,7 +97,7 @@ describe Controll::FlowHandler::Control do
   context 'A Control FlowHandler where #event returns :update notice event' do
     subject { flow_handler.new controller }
 
-    let(:flow_handler)  { UpdateEventWithoutHandlerMapping }
+    let(:flow_handler)  { FlowHandlers::UpdateEventWithoutHandler }
     let(:controller)    { MyController::Update.new }
 
     describe '.initialize' do
@@ -114,7 +117,7 @@ describe Controll::FlowHandler::Control do
   context 'A Control FlowHandler where #event returns :update notice event and has a Render class with matching mapping' do
     subject { flow_handler.new controller }
 
-    let(:flow_handler)  { UpdateEventFlowHandler }
+    let(:flow_handler)  { FlowHandlers::UpdateEvent }
     let(:controller)    { MyController::Update.new }
 
     describe '.initialize' do
@@ -126,7 +129,7 @@ describe Controll::FlowHandler::Control do
     describe '.execute' do    
       # since event returns nil
       specify do
-        expect { subject.execute }.to_not raise_error(Controll::FlowHandler::Control::ActionEventError)
+        expect { subject.execute }.to_not raise_error(Controll::FlowHandler::ActionEventError)
       end
 
       specify do
@@ -139,7 +142,7 @@ describe Controll::FlowHandler::Control do
   context 'A Control FlowHandler where #event returns :update notice event and has a Render class with NO matching mapping' do
     subject { flow_handler.new controller }
 
-    let(:flow_handler)  { UpdateEventNoMatchFlowHandler }
+    let(:flow_handler)  { FlowHandlers::UpdateEventNoMatch }
     let(:controller)    { MyController::Update.new }
 
     describe '.initialize' do
