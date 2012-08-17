@@ -29,6 +29,8 @@ module Controll
 
       protected
 
+      include Controll::Event::Helper
+
       def error name = :error, options = {}
         notify name, :error, options
       end
@@ -40,7 +42,7 @@ module Controll
       def create_notification name, type = nil, options = {}
         type ||= :notice
         raise ArgumentError, "Not a valid notification type: #{type}, must be one of: #{valid_notification_types}" unless valid_notification_type?(type)
-        Hashie::Mash.new(name: name, type: type, options: options)
+        create_event name, type, options
       end
       alias_method :create_event, :create_notification
 

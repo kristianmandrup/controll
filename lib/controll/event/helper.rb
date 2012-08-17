@@ -1,5 +1,5 @@
-module Controll::FlowHandler
-  module EventHelper
+module Controll
+  module Event::Helper
     def types
       @types ||= [:notice, :error]
     end
@@ -7,12 +7,16 @@ module Controll::FlowHandler
     def normalize event
       case event
       when Symbol
-        Hashie::Mash.new name: event, type: :notice
+        create_event event
       when Hash, Hashie::Mash
-        event
+        create_event event.delete(:name), event
       else
         raise Controll::InvalidEvent, "Event: #{event} could not be normalized, must be a Hash or Symbol"
       end
+    end
+
+    def create_event name, *args
+      Controll::Event.new name, *args
     end
   end
 end

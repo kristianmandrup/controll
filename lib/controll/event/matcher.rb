@@ -1,5 +1,5 @@
-module Controll::Helper
-  class EventMatcher
+module Controll
+  class Event::Matcher
     attr_reader :event
 
     def initialize event
@@ -12,7 +12,7 @@ module Controll::Helper
 
     protected
 
-    include Controll::FlowHandler::EventHelper
+    include Controll::Event::Helper
 
     def normalized events
       [events].flatten.map(&:to_sym)

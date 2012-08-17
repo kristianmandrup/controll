@@ -5,7 +5,7 @@ module Controll::FlowHandler
 
       NoRedirectionFoundError = Controll::FlowHandler::NoRedirectionFoundError
 
-      # event is a Hashie::Mash or simply a Symbol (default notice event)
+      # event <Event>
       def initialize event, redirections, types = []
         raise ArgumentError, "Must take :event option, was: #{event}" if event.blank?
         raise ArgumentError, "Must take non-empty :redirections option, was: #{redirections}" if redirections.blank?

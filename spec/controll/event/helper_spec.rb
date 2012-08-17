@@ -1,7 +1,11 @@
 require 'spec_helper'
 
-describe Controll::Helper::EventMatcher do
-  subject { Controll::Helper::EventMatcher.new event }
+class Container
+  include Controll::Event::Helper  
+end
+
+describe Controll::Event::Helper do
+  subject { Container.new }
 
   let(:events)      { %w{sign_in sign_out} }
   let(:bad_events)  { %w{bad stuff} }
