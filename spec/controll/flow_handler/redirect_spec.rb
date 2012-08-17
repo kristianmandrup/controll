@@ -32,41 +32,41 @@ describe Controll::FlowHandler::Redirect do
     }
   end
 
-  # context 'use directly without subclassing' do
-  #   subject { clazz.new '/' }
+  context 'use directly without subclassing' do
+    subject { clazz.new '/' }
 
-  #   let(:clazz) { Controll::FlowHandler::Redirect }
+    let(:clazz) { Controll::FlowHandler::Redirect }
 
-  #   let(:hello) { notification :hello }
+    let(:hello) { notification :hello }
 
-  #   describe '.action event' do
-  #     specify do
-  #       expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
-  #     end
-  #   end
-  # end
+    describe '.action event' do
+      specify do
+        expect { clazz.action(:hello) }.to raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
+      end
+    end
+  end
 
-  # context 'HelloToWelcomeRedirect subclass' do
-  #   subject { clazz.new '/' }
+  context 'HelloToWelcomeRedirect subclass' do
+    subject { clazz.new '/' }
 
-  #   let(:clazz) { HelloToWelcomeRedirect }
+    let(:clazz) { HelloToWelcomeRedirect }
 
-  #   context 'has redirections' do
-  #     describe '.action event' do
-  #       specify do
-  #         expect { clazz.action(:hello) }.to_not raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
-  #       end
+    context 'has redirections' do
+      describe '.action event' do
+        specify do
+          expect { clazz.action(:hello) }.to_not raise_error(Controll::FlowHandler::Redirect::NoRedirectionFoundError)
+        end
 
-  #       specify do
-  #         clazz.action(:hello).should be_a HelloToWelcomeRedirect
-  #       end
+        specify do
+          clazz.action(:hello).should be_a HelloToWelcomeRedirect
+        end
 
-  #       specify do
-  #         clazz.action(:hi).path.should == 'welcome'
-  #       end
-  #     end
-  #   end
-  # end
+        specify do
+          clazz.action(:hi).path.should == 'welcome'
+        end
+      end
+    end
+  end
 
   context 'ErrorBadRedirect subclass' do
     subject { clazz.new '/' }
