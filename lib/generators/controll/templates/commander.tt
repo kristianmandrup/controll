@@ -1,0 +1,15 @@
+module Commanders
+  class <%= class_name %> < <%= parent_class %>
+    # create basic command methods
+    # command_methods :cancel_commit, :create_account, :signout
+
+    # create custom command method with custom argument hash
+
+    # command_method :sign_out do
+    # end
+
+    # controller delegations
+    # controller_methods :auth_hash, :user_id
+  end
+end
+```

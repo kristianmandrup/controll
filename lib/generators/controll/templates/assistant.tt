@@ -1,0 +1,10 @@
+module Assistants
+  class <%= class_name %> < <%= parent_class %>
+    # public methods here
+    # def do_stuff
+    # ...  if current_user 
+    # end
+
+    # controller_methods :current_user
+  end
+end

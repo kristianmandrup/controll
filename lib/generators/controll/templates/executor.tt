@@ -1,0 +1,14 @@
+module Executors
+  class <%= class_name %> < <%= parent_class %>
+    def execute
+      # creates an error notification named :error
+      error and return unless valid_params?
+
+      # creates an error notification named :auth_invalid
+      # error(:auth_invalid) and return unless auth_valid?
+
+      # command! :sign_in
+      # result      
+    end
+  end
+end

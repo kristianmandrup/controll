@@ -1,0 +1,31 @@
+module Notifiers
+  class <%= class_name %> < <%= parent_class %>
+    handler :notice do
+      # ...
+    end
+
+    handler :error do
+      messages do
+        {
+          must_sign_in: 'You need to sign in before accessing this page!',
+          
+          auth_service_error: %q{There was an error at the remote authentication service.
+You have not been signed in.},
+          
+          cant_delete_current_account: 'You are currently signed in with this account!',
+          user_save_error: 'This is embarrassing! There was an error while creating your account from which we were not able to recover.',
+        }
+      end
+
+      msg :auth_error! do
+        "Error while authenticating via #{service_name}. The service did not return valid data."
+      end
+
+      msg :auth_invalid! do
+        'Error while authenticating via {{full_route}}. The service returned invalid data for the user id.'
+      end
+    end
+  end
+end
+
+    

@@ -1,0 +1,26 @@
+module FlowHandlers
+  class <%= class_name %> < <%= parent_class %>
+    fallback do
+      # event == :no_auth ? do_render(:text => omniauth.to_yaml) : fallback_action
+    end      
+
+    event do
+      # Executors::Authenticator.new(controller).execute
+    end
+
+    renderer do
+      # default_path :signup_services_path
+      # events       :signed_in_new_user, :signed_in
+    end
+
+    redirecter do
+      redirections :notice do
+        {        
+          # signup_services_path: :signed_in_new_user
+        }
+      end
+
+      # redirections :error, signin_path: [:error, :invalid, :auth_error]
+    end  
+  end
+end

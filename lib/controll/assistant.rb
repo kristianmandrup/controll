@@ -21,3 +21,7 @@ module Controll
   end
 end
 
+module Assistants
+  Assistant = Controll::Assistant
+  DelegateAssistant = Controll::DelegateAssistant
+end
