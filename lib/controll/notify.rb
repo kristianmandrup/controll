@@ -1,7 +1,5 @@
 module Controll
   module Notify
-    TYPES = [:notice, :error, :warning, :success]
-
     autoload :Base,           'controll/notify/base'
     autoload :Flash,          'controll/notify/flash'
     autoload :Typed,          'controll/notify/typed'

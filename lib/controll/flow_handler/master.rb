@@ -1,9 +1,7 @@
 module Controll::FlowHandler
-  class Control    
-    autoload :Macros,   'controll/flow_handler/control/macros'
-    autoload :Executor, 'controll/flow_handler/control/executor'
-
-    ActionEventError = Controll::FlowHandler::ActionEventError
+  class Master    
+    autoload :Macros,   'controll/flow_handler/master/macros'
+    autoload :Executor, 'controll/flow_handler/master/executor'
 
     include Macros
 
@@ -13,19 +11,18 @@ module Controll::FlowHandler
       @controller = controller
     end
 
-    # sets action to first action_handler that matches event
-    # returns self
+    # Uses Executor to execute each registered ActionHandler, such ad Renderer and Redirecter 
+    # The first ActionHandler matching the event returns an appropriate Action
+    # In case no ActionHandler matches, the Fallback action is returned
     def execute
-      return executor.execute
-    rescue StandardError
-      fallback
+      executor.execute || fallback
+    # rescue StandardError
+    #   fallback
     end
 
     def executor
-      @executor ||= Executor.new self, action_handlers: action_handlers
+      @executor ||= Executor.new controller, event: event, action_handlers: action_handlers
     end
-
-    delegate :executed?, to: :executor
 
     class << self
       def action_handlers

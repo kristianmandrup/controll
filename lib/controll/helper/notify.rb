@@ -4,71 +4,37 @@ module Controll
       extend ActiveSupport::Concern
 
       included do
-        attr_writer :notification_types
-
-        notification_types.each do |type|
-          define_method "create_#{type}" do |*args|
-            create_notification args.first, type.to_sym, args.extract_options!
+        Controll::Event.valid_types.each do |type|
+          meth = "create_#{type}"
+          define_method meth do |*args|
+            create_event args.first, type, args[1..-1]
           end
+          alias_method type, meth 
         end
       end
-
-      # msg stack
-      def notifications
-        @notifications ||= []
-      end
-
-      def main_event
-        notifications.last || create_notice(:success)
-      end
-
-      def notify name, type = nil, options = {}        
-        notifications << create_notification(name, type, options)
-        self # enable method chaining on controller
-      end
-
-      protected
 
       include Controll::Event::Helper
 
-      def error name = :error, options = {}
-        notify name, :error, options
+      def notify name, *args
+        events << create_event(name, *args)
+        self # enable method chaining on controller
       end
 
-      def success name = :success, options = {}
-        notify name, :success, options
+      # event stack
+      def events
+        @events ||= Controll::Events.new
       end
 
-      def create_notification name, type = nil, options = {}
-        type ||= :notice
-        raise ArgumentError, "Not a valid notification type: #{type}, must be one of: #{valid_notification_types}" unless valid_notification_type?(type)
-        create_event name, type, options
-      end
-      alias_method :create_event, :create_notification
-
-      def valid_notification_type? type
-        notification_types.include? type.to_sym
+      def main_event
+        events.last || create_success
       end
 
-      def notification_types
-        return self.class.notification_types if self.class.respond_to? :notification_types
-        Controll::Notify::Flash.types
-      end 
-
-      # allows customization of notification types
-      module ClassMethods
-        def notification_types
-          @notification_types ||= default_notification_types
-        end
-
-        def default_notification_types 
-          Controll::Notify::Flash.types
-        end
-      end
+      protected      
       
-      def process_notifications
-        notifications.each do |message|
-          message_handler.send(message.type).notify message.name, message.options
+      def process_events notifier = nil
+        notifier ||= self.notifier
+        events.each do |event|
+          notifier.send(event.type).notify event.name, event.options
         end
       end
     end

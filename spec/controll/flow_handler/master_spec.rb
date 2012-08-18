@@ -13,19 +13,19 @@ module MyController
 end
 
 module FlowHandlers
-  class EmptyEvent < Control
+  class EmptyEvent < Master
     def event
     end
   end
 
-  class UpdateEventWithoutHandler < Control
+  class UpdateEventWithoutHandler < Master
     def event
       :update
     end
   end
 
 
-  class UpdateEvent < Control
+  class UpdateEvent < Master
     def event
       :update
     end
@@ -36,7 +36,7 @@ module FlowHandlers
     end
   end
 
-  class UpdateEventNoMatch < Control
+  class UpdateEventNoMatch < Master
     def event
       :update
     end
@@ -50,11 +50,11 @@ end
 
 
 
-describe Controll::FlowHandler::Control do
+describe Controll::FlowHandler::Master do
   context 'use directly without sublclassing' do
     subject { flow_handler.new controller }
 
-    let(:flow_handler)  { Controll::FlowHandler::Control }
+    let(:flow_handler)  { Controll::FlowHandler::Master }
     let(:controller)    { MyController::Update.new }
 
     describe '.initialize' do

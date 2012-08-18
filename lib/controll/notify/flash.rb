@@ -20,11 +20,11 @@ module Controll
         attr_writer :types
 
         def types
-          @types ||= TYPES
+          @types ||= Controll::Event.valid_types
         end
 
         def add_types *types
-          @types += types.flatten
+          @types += types if types.all? {|type| type.kind_of? Symbol}
         end
         alias_method :add_type, :add_types
       end
@@ -41,7 +41,7 @@ module Controll
       end
 
       def types
-        self.class.types
+        self.class.types.map(&:to_sym)
       end
 
       def signal_type

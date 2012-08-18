@@ -1,18 +1,13 @@
 require 'controll/flow_handler/base'
 
 module Controll::FlowHandler
-  class Renderer < Base
+  class Renderer < ActionHandler
     BadPathError              = Controll::FlowHandler::BadPathError
     NoEventsDefinedError      = Controll::FlowHandler::NoEventsDefinedError
     NoDefaultPathDefinedError = Controll::FlowHandler::NoDefaultPathDefinedError
 
-    def initialize path
-      super path
-    end
-
-    def perform controller
-      raise BadPathError, "Bad path: #{path}" if path.blank?
-      controller.render controller.send(path)
+    def controller_action
+      :do_render
     end
 
     class << self

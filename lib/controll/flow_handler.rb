@@ -3,7 +3,7 @@ require 'controll/flow_handler/errors'
 module Controll
   module FlowHandler
     autoload :Base,         'controll/flow_handler/base'
-    autoload :Control,      'controll/flow_handler/control'
+    autoload :Master,       'controll/flow_handler/master'
     autoload :Redirecter,   'controll/flow_handler/redirecter'
     autoload :Renderer,     'controll/flow_handler/renderer'    
     autoload :Fallback,     'controll/flow_handler/fallback'        
@@ -13,5 +13,5 @@ end
 
 module FlowHandlers
   Base    = Controll::FlowHandler::Base
-  Control = Controll::FlowHandler::Control
+  Master  = Controll::FlowHandler::Master
 end

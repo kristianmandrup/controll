@@ -1,8 +1,9 @@
 module Controll::FlowHandler
   class Base
-    attr_reader :path
+    attr_reader :path, :controller
 
-    def initialize path
+    def initialize controller, path
+      @controller = controller
       @path = path.to_s
     end
 

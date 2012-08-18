@@ -1,19 +1,15 @@
 module Controll::FlowHandler
   class Fallback < Base
-    attr_reader :event
+    attr_reader :controller, :event
 
-    def initialize event
+    def initialize controller, event
+      @controller = controller
       @event = event
     end
 
-    def perform controller
-      controller.fallback
+    def perform
+      raise Controll::NotEnabled, "Controller is not enabled with Controll. Missing #do_fallback method" unless controller.respond_to :do_fallback
+      controller.do_fallback(event) if 
     end
-
-    class << self
-      def action event
-        self.new event
-      end
-    end    
   end
 end

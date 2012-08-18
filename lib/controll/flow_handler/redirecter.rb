@@ -1,23 +1,19 @@
 require 'controll/flow_handler/base'
 
 module Controll::FlowHandler
-  class Redirecter < Base
+  class Redirecter < ActionHandler
     autoload :Action, 'controll/flow_handler/redirect/action'
     autoload :Mapper, 'controll/flow_handler/redirect/mapper'
 
-    def initialize path
-      super path
-    end
-
-    def perform controller
-      raise BadPathError, "Bad path: #{path}" if path.blank?
-      controller.do_redirect controller.send(path)
+    def controller_action
+      :do_redirect
     end
 
     class << self
       attr_writer :action_clazz
       attr_reader :types
 
+      # this method could be generated whenever a class inherits from ActionHandler class?
       def inherited base
         if base.parent.respond_to? :add_action_handler
           base.add_action_handler self.name.demodulize
@@ -26,7 +22,7 @@ module Controll::FlowHandler
 
       def action event
         path = action_clazz.new(event, redirections, types).map
-        self.new path unless path.blank?
+        self.new controller, path unless path.blank?
       end
 
       # reader
@@ -49,7 +45,7 @@ module Controll::FlowHandler
       protected
 
       def action_clazz
-        @action_clazz ||= Controll::FlowHandler::Redirect::Action
+        @action_clazz ||= Controll::FlowHandler::Redirecter::Action
       end
     end
   end

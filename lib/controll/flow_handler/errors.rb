@@ -1,6 +1,6 @@
 module Controll::FlowHandler
   class ActionEventError          < StandardError; end
-
+  
   # Redirect
   class NoRedirectionFoundError   < StandardError; end
 

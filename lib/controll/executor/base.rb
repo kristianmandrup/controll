@@ -1,10 +1,10 @@
 module Controll
   module Executor
     class Base
-      attr_accessor :initiator, :options
+      attr_accessor :controller, :options
 
-      def initialize initiator, options = {}
-        @initiator = initiator
+      def initialize controller, options = {}
+        @controller = controller
         @options = options
       end
     end

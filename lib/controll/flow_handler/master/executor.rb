@@ -21,7 +21,7 @@ module Controll::FlowHandler
             errors << e
           end
         end
-        fallback        
+        fallback
       end
 
       def errors
@@ -30,7 +30,13 @@ module Controll::FlowHandler
 
       protected
 
-      delegate :event, to: :initiator
+      def event
+        options[:event]
+      end
+
+      def fallback
+        Fallback.new controller, event
+      end
 
       def action_handlers
         @action_handlers ||= options[:action_handlers]
@@ -41,14 +47,6 @@ module Controll::FlowHandler
         clazz.constantize
       rescue NameError
         nil
-      end
-
-      def executed? 
-        @executed
-      end
-
-      def executed!
-        @executed = true
       end
     end
   end

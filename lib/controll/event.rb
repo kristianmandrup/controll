@@ -12,9 +12,9 @@ module Controll
       raise ArgumentError, "Invalid type: #{@type}" unless self.class.valid_type? @type 
       @options.delete(:type) if options[:type] == @type
     end
-
+    
     def self.valid_types
-      @valid_types ||= %w{notice error warning success}
+      @valid_types ||= [:notice, :error, :warning, :success]
     end
 
     valid_types.each do |type|

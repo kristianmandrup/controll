@@ -10,22 +10,34 @@ class MyController
   alias_method :redirect_to, :render  
 end
 
-class Executor < Controll::Executor::Notificator
+module Executors
+  class Custom < Notificator
+  end
 end
 
-class ServiceCommander < Executor
+module Commanders
+  class Services < Commander
+  end
 end
 
-class ServiceMessageHandler < Executor
+module Notifiers
+  class Services < Typed
+  end
 end
 
-class ServiceAssistant < Executor
+module Assistants
+  class Service < Assistant
+  end
 end
 
-class ServiceDelegateAssistant < Executor
+module Assistants
+  class ServiceDelegate < DelegateAssistant
+  end
 end
 
-class ServiceFlowHandler < Executor
+module FlowHandlers
+  class CreateService < Control
+  end
 end
 
 describe Controll::Helper do

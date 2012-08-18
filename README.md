@@ -87,22 +87,39 @@ end
 Using the tools contained in `controll` the above logic can be encapsulated like this:
 
 ```ruby
-def create    
-  FlowHandler::CreateService.new(self).execute
+class ServicesController < ApplicationController
+  include Controll::Enabler
+
+  def create
+    execute # action.perform
+  end
 end
 ```
 
 A `FlowHandler` can use Executors to encapsulate execution logic, which again can execute Commands that encapsulate business logic related to the user Session or models (data).
 
-The FlowHandler can manage a Redirecter, Renderer and Notifier in a standardized, much more Object Oriented fashion, which adheres to the Single Responsibility pattern.
+The FlowHandler takes the last event on the event stack and consults the ActionHandlers registered, usually a Redirecter and Renderer to ask them if they can match the event name.
+The first one with a match is returned as the Action, which the controller can then perform in order to either render or redirect.
+
+If none of the ActionHandlers can match the event, a Fallback Action is returned. The controller should then be configured to handle a fallback action appropriately.
 
 Controll has built in notification management which work both for flash messages (or other types of notifications) and as return codes for use in flow-control logic.
+All events in the stack are processed and can fx be put on the flash hash accoring to event type, fx `flash[:error]` for an `:error` event etc.
 
-Using the `controll` helpers, you can avoid the typical Rails anti-pattern of Thick controllers, without bloating your Models with unrelated model logic or pulling in various Helper modules which pollute the space of the Controller anyhow!
+Using the `controll` helpers, you can avoid the typical Rails anti-pattern of Thick controllers, without bloating your Models with unrelated model logic or pulling in various Helper modules which pollute the space of the Controller!
 
 ## Usage
 
-In your controller include the `Controll::Helper` helper module.
+The recommended approach to handle complex Controller logic using Controll:
+
+* Controll enable a Controller
+* Configure flow_handler, commander and notifier etc.
+* Create FlowHandler, Commander and Notifier classes
+* Create Commands
+
+## Controll enabling a Controller
+
+In your controller include the `Controll::Enabler` module.
 
 ```ruby
 class ServicesController < ApplicationController
@@ -110,7 +127,7 @@ class ServicesController < ApplicationController
   protect_from_forgery :except => :create
 
   # see 'controll' gem
-  include Controll::Helper
+  include Controll::Enabler
 end
 ```
 
@@ -118,15 +135,33 @@ Better yet, to make it available for all controllers, include it in your Applica
 
 ```ruby
 class ApplicationController
-  include Controll::Helper
+  include Controll::Enabler
 end
 ```
+
+You can also include the `Controll::Macros` module in a base Controller class of your choosing, fx:
+
+```ruby
+class ApplicationController
+  include Controll::Macros
+end
+```
+
+Then you can use the `#enable_controll` macro in any subclass Controller class:
+
+```ruby
+class ServicesController < ApplicationController
+  enable_controll
+end
+```
+
+## Controll configuration
 
 In your Controller you should define a Notifier and Commander to be used.
 
 ```ruby
 class ServicesController < ApplicationController
-  include Controll::Helper
+  enable_controll
 
   ...
 
@@ -135,12 +170,72 @@ class ServicesController < ApplicationController
   notifier :services
   commander :services
 
-  # or simply
+  # or simply (using naming convention)
   controll :notifier, :commander
+
+  def create
+    create_action.perform
+  end
+
+  protected
+
+  def create_action
+    @create_action ||= FlowHandlers::CreateService.new(self)
+  end
+
+  fallback do |event|
+    event == :no_auth ? render(:text => omniauth.to_yaml) : fallback_action
+  end        
+
+  def fallback_action
+    redirect_to root_url
+  end
 end
 ```
 
-The Commander is your command center for a group of related commands. Typically you will want to define a Commander for a specific controller if the controller has more than 3 commands.
+### Focused Controller config
+
+In case you use Focused Controller, this can be strutctured even better like this:
+
+```ruby
+class ServicesController
+
+  # could be extracted into "global" namespace for reuse across controllers...
+  module ControllAction
+    extend ActiveSupport::Concern
+
+    included do
+      controll :notifier, :commander, :flow_handler
+    end
+
+    def fallback_action
+      redirect_to root_url
+    end
+  end
+
+  class Create < FocusedAction
+    include ControllAction
+
+    run do
+      execute
+    end
+
+    protected
+
+    fallback do |event|
+      event == :no_auth ? render(:text => omniauth.to_yaml) : fallback_action
+    end        
+  end
+end
+```
+
+*Wow! Now we're talking!!!!*
+
+## Creating a Commander
+
+The Commander is your command center for a group of related commands. Typically you will want to define a Commander for a specific controller if the controller has more than 3 commands. If you put your Commander under the `Commanders` namespace (module) you get direct access to the Commander constant to be used as subclass.
+
+The Commander should contain a group of command methods that are conceptually in the same "category", fx all the command for a particular controller.
 
 ```ruby
 module Commanders
@@ -163,11 +258,9 @@ module Commanders
 end
 ```
 
-The `#commands` class macro can be used to create command methods that only take the initiator (in this case the controller) as argument.
+The `Commander class extends `Imperator::Command::MethodFactory` making `#command_method` and `#command_methods` available. These class macros can be used to create command methods that only take the initiator (in this case the controller) as argument.
 
-For how to implement the commands, see the `imperator` gem, or see the `oauth_assist` engine for a full example. There are now also nice macros available for creating command methods! The `Commander class extends `Imperator::Command::MethodFactory` making `#command_method` and `#command_methods` available.
-
-We will implement this Notifier later when we know which notifications and errors we want to use/issue.
+For how to implement the Commands themselves, see the [imperator-ext](https://github.com/kristianmandrup/imperator-ext) gem. 
 
 ## FlowHandlers
 
@@ -175,21 +268,24 @@ For Controller actions that require complex flow control, use a FlowHandler:
 
 ```ruby
 module FlowHandlers
-  class CreateService < Control
-    fallback do
-      event == :no_auth ? do_render(:text => omniauth.to_yaml) : fallback_action
-    end      
+  class CreateService < Master
 
+    # event method that returns the event to be processed by the flow handler
     event do
       Executors::Authenticator.new(controller).execute
     end
 
+    # configuration of the Renderer ActionHandler
+    # will return a Renderer Action if it matches the event
     renderer do
       default_path :signup_services_path
       events       :signed_in_new_user, :signed_in
     end
 
+    # configuration of the Redirecter ActionHandler
+    # will return a Redirecter Action if it matches the event
     redirecter do
+      # redirection mappings for :notice events
       redirections :notice do
         {        
           signup_services_path: :signed_in_new_user
@@ -198,42 +294,65 @@ module FlowHandlers
         }
       end
 
+      # redirection mappings for :error events
       redirections :error, signin_path: [:error, :invalid, :auth_error]
     end  
   end
 end
 ```
 
-The `#renderer` and `#redirector` macros will each create a Class of the same name that inherits from Controll::FlowHandler::Redirector or Controll::FlowHandler::Renderer respectively. You can of course also define these classes directly yourself instead of using the macros.
+The `#renderer` and `#redirector` macros will each create a Class of the same name that inherit from Controll::FlowHandler::Redirector or Controll::FlowHandler::Renderer respectively. You can also define these classes directly yourself instead of using the macros.
 
-In the `Redirect` class we are setting up a mapping for various path, specifying which notifications/event should cause a redirect to that path.
+In the `Redirecter` class we are setting up a mapping for various path, specifying which notifications/event should cause a redirect to that path.
 
-If you are rendering or redirecting to paths that take arguments, you can either extend the `#action` class method of your Redirect or Render class implementation or you can define a `#use_alternatives` method in your `FlowHandler` that contains this particular flow logic. You can also use the `#use_fallback` method for this purpose.
+If you are rendering or redirecting to paths that take arguments, you can either extend the `#action` class method of your Redirect or Render class implementation or you can define a `#use_alternatives` method in your `FlowHandler` that contains this particular flow logic.
 
-## The Authenticator Executor
+## The Executor
 
-The `Authenticator` inherits from `Executor::Notificator` which uses `#method_missing` in order to delegate any missing method back to the initiator of the Executor, in this case the FlowHandler. The `#result` call at the end of `#execute` ensures that the last notification event is returned, to be used for deciding what to render or where to redirect (see FlowHandler).
+The `Authenticator` class shown below inherits from `Executor::Notificator` which uses `#method_missing` in order to delegate any missing method back to the controller of the Executor. The FlowHandler passed in the controller. This means that calls can be executed directly on the controller, such as making notifications etc.
+
+The `#result` call at the end of `#execute` ensures that the last notification event is returned, to be used for deciding what to render or where to redirect (see FlowHandler).
 
 ```ruby
 module Executors
-  class Authenticator < Notificator
+  class Authenticator < Controlled
+
+    # ensures pattern:
+    # - perform validations and only execute command if no error
     def execute
-      # creates an error notification named :error
-      error and return unless valid_params?
-
-      # creates an error notification named :auth_invalid
-      error(:auth_invalid) and return unless auth_valid?
-
-      command! :sign_in
+      super      
       result      
     end
 
     protected
 
+    controller_methods :omniauth, :service, :auth_hash, :auth_valid?
+
+    def do_command
+      command! :sign_in
+    end
+
+    def validations
+      # creates an error notification named :error
+      error and return unless valid_params?
+
+      # creates an error notification named :auth_invalid
+      error(:auth_invalid) and return unless auth_valid?
+    end    
+
     def valid_params?
       omniauth and service and auth_hash
     end
   end
+end
+```
+
+Alternatively you can use the execute block macro to generate the `#execute` instance method and ensure that it ends by returning result.
+
+```ruby
+execute do
+  # error/validation checks? ...
+  command! :sign_in
 end
 ```
 
@@ -299,17 +418,28 @@ You have not been signed in.},
 end
 ```
 
-The Notifier infrastructure consists of the following classes:
-
-* 
-
 ## Rails Generators
+
+### Setup generator
 
 `$ rails g controll:setup`
 
 Generate only specific controll folders
 
 `$ rails g controll:setup commanders notifiers`
+
+### Controll artifact generators
+
+* assistant
+* executor
+* flow_handler
+* notifier
+
+Example usage:
+
+`$ rails g controll:flow_handler create_service`
+
+Use `-h` for help on any specific controller for more usage options and info.
 
 ## Contributing to controll
  
