@@ -7,9 +7,19 @@ module Controll::FlowHandler
       @event = event
     end
 
-    def perform
-      raise Controll::NotEnabled, "Controller is not enabled with Controll. Missing #do_fallback method" unless controller.respond_to :do_fallback
-      controller.do_fallback(event) if 
+    def perform      
+      error_check!
+      controller.do_fallback self
+    end
+    
+    def type
+      :fallback
+    end
+
+    class << self
+      def action controller, event
+        self.new controller, event
+      end
     end
   end
 end

@@ -1,15 +1,11 @@
 module Controll
   module Enabler
-    autoload :Notify,       'controll/helper/notify'
-    autoload :HashAccess,   'controll/helper/hash_access'
-    autoload :Params,       'controll/helper/params'
-    autoload :Session,      'controll/helper/session'
-    autoload :PathResolver, 'controll/helper/path_resolver'
-    autoload :EventMatcher, 'controll/helper/event_matcher'
+    autoload :Macros,       'controll/enabler/macros'
+
+    class NotIncluded < StandardError; end
 
     include Controll::Helper::Notify
-    include Controll::Helper::Params
-    
+    include Controll::Helper::Params    
     include Controll::Enabler::Macros
 
     delegate :command, :command!, :use_command, to: :commander

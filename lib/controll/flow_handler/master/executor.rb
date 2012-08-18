@@ -1,8 +1,10 @@
 module Controll::FlowHandler
-  class Control    
+  class Master    
     class Executor < Controll::Executor::Base
-      NoEventsDefinedError    = Controll::FlowHandler::NoEventsDefinedError
-      NoRedirectionFoundError = Controll::FlowHandler::NoRedirectionFoundError    
+      FlowHandler = Controll::FlowHandler
+
+      NoEventsDefinedError    = FlowHandler::NoEventsDefinedError
+      NoRedirectionFoundError = FlowHandler::NoRedirectionFoundError    
 
       def initialize initiator, options = {}
         super
@@ -35,7 +37,7 @@ module Controll::FlowHandler
       end
 
       def fallback
-        Fallback.new controller, event
+        FlowHandler::Fallback.new controller, event
       end
 
       def action_handlers

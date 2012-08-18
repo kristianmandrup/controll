@@ -5,9 +5,9 @@ module Controll::FlowHandler
     autoload :Action, 'controll/flow_handler/redirect/action'
     autoload :Mapper, 'controll/flow_handler/redirect/mapper'
 
-    def controller_action
-      :do_redirect
-    end
+    def type
+      :redirect
+    end    
 
     class << self
       attr_writer :action_clazz
@@ -20,7 +20,7 @@ module Controll::FlowHandler
         end
       end
 
-      def action event
+      def action controller, event
         path = action_clazz.new(event, redirections, types).map
         self.new controller, path unless path.blank?
       end

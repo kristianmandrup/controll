@@ -1,26 +1,33 @@
 require 'spec_helper'
 
-class BasicFallback < Controll::FlowHandler::Fallback
-  def perform
-    'hello'
+class FallbackController
+  def do_fallback fallback
+    "did a nice fallback :) - #{fallback.event.name}"
   end
 end
 
+class BasicFallback < Controll::FlowHandler::Fallback
+end
+
 describe Controll::FlowHandler::Fallback do
-  context 'override perform' do
-    subject { clazz.new '/' }
+  context 'Basic default fallback' do
+    subject { clazz.new controller, event }
 
-    let(:clazz) { BasicFallback }
+    let(:controller)  { FallbackController.new }
+    let(:clazz)       { BasicFallback }
+    let(:event)       { create_event :unknown, :notice }
 
-    describe '.action event' do
+    include Controll::Event::Helper
+
+    describe '.action controller, event' do
       specify do
-        clazz.action(:hello).should be_a Controll::FlowHandler::Fallback
+        clazz.action(controller, event).should be_a Controll::FlowHandler::Fallback
       end
     end
 
     describe '.perform' do
       specify do
-        clazz.action(:hello).perform.should == 'hello'
+        clazz.action(controller, event).perform.should == "did a nice fallback :) - #{event.name}"
       end
     end
   end

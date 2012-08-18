@@ -2,12 +2,11 @@ require 'controll/flow_handler/base'
 
 module Controll::FlowHandler
   class Renderer < ActionHandler
-    BadPathError              = Controll::FlowHandler::BadPathError
     NoEventsDefinedError      = Controll::FlowHandler::NoEventsDefinedError
     NoDefaultPathDefinedError = Controll::FlowHandler::NoDefaultPathDefinedError
 
-    def controller_action
-      :do_render
+    def type
+      :render
     end
 
     class << self
@@ -17,10 +16,10 @@ module Controll::FlowHandler
         end
       end
 
-      def action event, path = nil
+      def action controller, event, path = nil
         check!
         event = normalize event
-        self.new(path || default_path) if events.include? event.name
+        self.new(controller, path || default_path) if events.include? event.name
       end
 
       # http://bugs.ruby-lang.org/issues/1082

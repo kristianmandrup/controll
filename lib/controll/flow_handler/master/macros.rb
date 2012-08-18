@@ -1,5 +1,5 @@
 module Controll::FlowHandler
-  class Control
+  class Master
     module Macros
       extend ActiveSupport::Concern
 
