@@ -1,5 +1,5 @@
 module Controll::FlowHandler
-  class Base
+  class Action
     attr_reader :path, :controller
 
     def initialize controller, path

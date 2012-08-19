@@ -98,24 +98,36 @@ end
 
 A `FlowHandler` can use Executors to encapsulate execution logic, which again can execute Commands that encapsulate business logic related to the user Session or models (data).
 
-The FlowHandler takes the last event on the event stack and consults the ActionHandlers registered, usually a Redirecter and Renderer to ask them if they can match the event name.
+The FlowHandler takes the last event on the event stack and consults the ActionPaths registered, usually a Redirecter and Renderer. An ActionPath is a type of Action which can return a path. The FlowHandler initiates an Executor which iterates the ActionPaths to find the first one which can match the event.
+
 The first one with a match is returned as the Action, which the controller can then perform in order to either render or redirect.
 
-If none of the ActionHandlers can match the event, a Fallback Action is returned. The controller should then be configured to handle a fallback action appropriately.
+If none of the ActionPaths can match the event, a Fallback Action is returned. The controller should then be configured to handle a Fallback Action appropriately.
 
-Controll has built in notification management which work both for flash messages (or other types of notifications) and as return codes for use in flow-control logic.
-All events in the stack are processed and can fx be put on the flash hash accoring to event type, fx `flash[:error]` for an `:error` event etc.
+Controll has built in Notification Management which work both for flash messages (or other types of notifications) and as return codes for use in flow-control logic.
 
-Using the `controll` helpers, you can avoid the typical Rails anti-pattern of Thick controllers, without bloating your Models with unrelated model logic or pulling in various Helper modules which pollute the space of the Controller!
+All events in the event stack are processed and can fx be put on the flash hash according to event type, fx `flash[:error]` for an `:error` event etc.
+
+The Notification system works by mapping events to messages in a central location, similar to mapping events to paths.
+
+Using these Controll artifacts/systems, you can avoid the typical Rails anti-pattern of Thick controllers, without bloating your Models with unrelated model logic or pulling in various Helper modules which pollute the space of the Controller!
 
 ## Usage
 
 The recommended approach to handle complex Controller logic using Controll:
 
-* Controll enable a Controller
-* Configure flow_handler, commander and notifier etc.
-* Create FlowHandler, Commander and Notifier classes
-* Create Commands
+* Enable Controll on Controller
+* Configure Controller with FlowHandler, Commander and Notifier
+
+* Create Commands for Commander
+* Define events corresponding to commands
+* Configure Commander with Command methods
+
+* Create FlowHandler
+* Configure FlowHandler with Render and Redirect event mappings
+
+* Create Notifier
+* Configure Notifier with Event handlers and event -> message mappings
 
 ## Controll enabling a Controller
 

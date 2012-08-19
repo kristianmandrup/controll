@@ -1,7 +1,5 @@
-require 'controll/flow_handler/base'
-
 module Controll::FlowHandler
-  class Renderer < ActionHandler
+  class Renderer < PathAction
     NoEventsDefinedError      = Controll::FlowHandler::NoEventsDefinedError
     NoDefaultPathDefinedError = Controll::FlowHandler::NoDefaultPathDefinedError
 

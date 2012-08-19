@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 class MySweetController
-  include Controll::Helper
+  include Controll::Enabler
 
   redirect_map :index => %w{success}
 

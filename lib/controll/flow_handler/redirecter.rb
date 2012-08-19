@@ -1,7 +1,5 @@
-require 'controll/flow_handler/base'
-
 module Controll::FlowHandler
-  class Redirecter < ActionHandler
+  class Redirecter < PathAction
     autoload :Action, 'controll/flow_handler/redirect/action'
     autoload :Mapper, 'controll/flow_handler/redirect/mapper'
 

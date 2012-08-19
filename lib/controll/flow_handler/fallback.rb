@@ -1,5 +1,5 @@
 module Controll::FlowHandler
-  class Fallback < Base
+  class Fallback < Action
     attr_reader :controller, :event
 
     def initialize controller, event

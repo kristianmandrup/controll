@@ -34,7 +34,7 @@ module Controll
       end
 
       def event_matcher
-        @event_matcher ||= EventMatcher.new event
+        @event_matcher ||= Controll::Event::Matcher.new event
       end
 
       def event
