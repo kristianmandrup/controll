@@ -9,6 +9,7 @@ module Controll
     autoload :Renderer,     'controll/flow_handler/renderer'    
     autoload :Fallback,     'controll/flow_handler/fallback'        
     autoload :EventHelper,  'controll/flow_handler/event_helper'    
+    autoload :Mapper,       'controll/flow_handler/mapper'    
   end
 end
 

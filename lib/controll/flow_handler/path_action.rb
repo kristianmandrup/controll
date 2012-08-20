@@ -11,8 +11,8 @@ module Controll::FlowHandler
     end
 
     class << self
+      # do sth useful here?
       def inherited base
-        raise NotImplementedError, 'You must implement the #inherited class method'
       end
     end
   end

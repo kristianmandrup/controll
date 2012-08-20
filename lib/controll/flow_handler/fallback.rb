@@ -2,13 +2,13 @@ module Controll::FlowHandler
   class Fallback < Action
     attr_reader :controller, :event
 
-    def initialize controller, event
+    def initialize controller, event = nil
       @controller = controller
-      @event = event
+      @event = event if event
     end
 
     def perform      
-      error_check!
+      error_check! if event
       controller.do_fallback self
     end
     
@@ -17,7 +17,7 @@ module Controll::FlowHandler
     end
 
     class << self
-      def action controller, event
+      def action controller, event = nil
         self.new controller, event
       end
     end

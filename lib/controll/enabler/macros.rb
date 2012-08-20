@@ -46,6 +46,15 @@ module Controll
           end
         end
 
+        def flow_handler name, options = {}
+          define_method :flow_handler do
+            unless instance_variable_get("@flow_handler")
+              clazz = "FlowHandlers::#{name.to_s.camelize}".constantize        
+              instance_variable_set "@flow_handler", clazz.new(self, options)
+            end
+          end
+        end
+
         def assistant name, options = {}
           define_method :assistant do
             unless instance_variable_get("@assistant")
@@ -55,14 +64,11 @@ module Controll
           end
         end
 
-        def flow_handler name, options = {}
-          define_method :flow_handler do
-            unless instance_variable_get("@flow_handler")
-              clazz = "FlowHandlers::#{name.to_s.camelize}".constantize        
-              instance_variable_set "@flow_handler", clazz.new(self, options)
-            end
-          end
-        end
+        def assistant_methods *names
+          options = names.extract_options!
+          assistant = options[:to] || :assistant
+          delegate names, to: assistant
+        end        
       end
     end
   end

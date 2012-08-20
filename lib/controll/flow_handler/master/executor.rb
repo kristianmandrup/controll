@@ -8,7 +8,6 @@ module Controll::FlowHandler
 
       def initialize initiator, options = {}
         super
-        # puts "options: #{options}"
       end
 
       def execute        

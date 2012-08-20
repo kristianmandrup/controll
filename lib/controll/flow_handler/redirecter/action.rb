@@ -36,12 +36,8 @@ module Controll::FlowHandler
       end
 
       def mapper redirect_map
-        @mapper ||= mapper_class.new event, redirect_map
+        @mapper ||= Controll::FlowHandler::Mapper.new event, redirect_map
       end      
-
-      def mapper_class
-        Controll::FlowHandler::Redirect::Mapper
-      end
     end
   end
 end

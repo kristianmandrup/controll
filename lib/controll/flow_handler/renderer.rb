@@ -7,6 +7,8 @@ module Controll::FlowHandler
       :render
     end
 
+    # TODO: Should combine with Redirecter style, allowing for multiple render path mappings!
+    # This is fx useful for Wizards etc. where one Controller can render to many views, depending on state
     class << self
       def inherited base
         if base.parent.respond_to? :add_action_handler
@@ -26,14 +28,16 @@ module Controll::FlowHandler
       #   (class << hello; self; end)
       def default_path str = nil, &block
         (class << self; self; end).send :define_method, :default_path do 
-          block_given? ? yield : str
+          block_given? ? instance_eval(&block) : str
         end
       end 
 
       def events *args, &block
         (class << self; self; end).send :define_method, :events do 
-          block_given? ? yield : args.flatten
+          args.flatten
         end
+
+        default_path(&block) if block_given?
       end 
 
       protected

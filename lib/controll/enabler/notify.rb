@@ -1,5 +1,5 @@
 module Controll
-  module Helper
+  module Enabler
     module Notify
       extend ActiveSupport::Concern
 
@@ -16,8 +16,8 @@ module Controll
 
       include Controll::Event::Helper
 
-      def notify name, *args
-        events << create_event(name, *args)
+      def notify event, *args
+        events << normalize(event, *args)
         self # enable method chaining on controller
       end
 

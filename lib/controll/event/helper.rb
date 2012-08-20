@@ -1,11 +1,11 @@
 module Controll
   module Event::Helper
-    def normalize event
+    def normalize event, *args
       case event
       when Controll::Event
         event
       when Symbol
-        create_event event
+        create_event event, *args
       when Hash, Hashie::Mash
         create_event event.delete(:name), event
       else

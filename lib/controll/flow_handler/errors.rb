@@ -1,11 +1,14 @@
 module Controll::FlowHandler
   class ActionEventError          < StandardError; end
   
+  class PathActionError           < StandardError; end
+
   # Redirect
-  class NoRedirectionFoundError   < StandardError; end
+  class NoRedirectionFoundError   < PathActionError; end
 
   # Render
-  class NoEventsDefinedError      < StandardError; end
-  class NoDefaultPathDefinedError < StandardError; end
-  class BadPathError              < StandardError; end
+  class NoEventsDefinedError      < PathActionError; end
+  class NoDefaultPathDefinedError < PathActionError; end
+  
+  class BadPathError              < PathActionError; end
 end
