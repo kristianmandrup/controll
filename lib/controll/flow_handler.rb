@@ -13,6 +13,7 @@ module Controll
 end
 
 module FlowHandlers
-  Base    = Controll::FlowHandler::Base
-  Master  = Controll::FlowHandler::Master
+  Action      = Controll::FlowHandler::Action
+  PathAction  = Controll::FlowHandler::Action
+  Master      = Controll::FlowHandler::Master
 end

@@ -3,9 +3,12 @@ module Controll
     autoload :Helper,      'controll/event/helper'
     autoload :Matcher,     'controll/event/matcher'    
 
+    class InvalidError < StandardError; end
+
     attr_reader :name, :type, :options
 
     def initialize name, *args
+      raise ArgumentError, "Event must have a name identifier" if name.blank?
       @name     = name.to_sym
       @options  = args.extract_options! 
       @type     = (extract_type(args.first) || options[:type] || :notice).to_sym

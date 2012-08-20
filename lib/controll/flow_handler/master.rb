@@ -5,10 +5,11 @@ module Controll::FlowHandler
 
     include Macros
 
-    attr_reader :controller, :action
+    attr_reader :controller, :action, :options
 
-    def initialize controller
+    def initialize controller, options = {}
       @controller = controller
+      @options    = options
     end
 
     # Uses Executor to execute each registered ActionHandler, such ad Renderer and Redirecter 

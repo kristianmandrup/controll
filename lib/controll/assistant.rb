@@ -1,4 +1,7 @@
 module Controll
+  autoload :SessionAssistant, 'controll/assistant/session_assistant'
+  autoload :ParamAssistant,   'controll/assistant/param_assistant'
+
   class Assistant
     attr_reader :controller, :options
 
@@ -8,7 +11,7 @@ module Controll
     end
 
     def self.controller_methods *names
-      delegate names, to: :controller
+      delegate *names, to: :controller
     end
   end
 end

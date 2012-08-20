@@ -7,6 +7,7 @@ module Controll
         Controll::Event.valid_types.each do |type|
           meth = "create_#{type}"
           define_method meth do |*args|
+            return create_event type, type if args.empty?
             create_event args.first, type, args[1..-1]
           end
           alias_method type, meth 

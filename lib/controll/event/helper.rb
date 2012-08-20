@@ -2,6 +2,8 @@ module Controll
   module Event::Helper
     def normalize event
       case event
+      when Controll::Event
+        event
       when Symbol
         create_event event
       when Hash, Hashie::Mash

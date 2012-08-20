@@ -1,16 +1,19 @@
 module Controll
   module Enabler
-    autoload :Macros,       'controll/enabler/macros'
+    autoload :Macros,         'controll/enabler/macros'
+    autoload :PathResolver,   'controll/enabler/path_resolver'
+
+    extend ActiveSupport::Concern
 
     class NotIncluded < StandardError; end
 
-    include Controll::Helper::Notify
-    include Controll::Helper::Params    
-    include Controll::Enabler::Macros
+    included do
+      include Controll::Helper::Notify
+      include Controll::Helper::Params    
+      include Macros
 
-    delegate :command, :command!, :use_command, to: :commander
-
-    extend ActiveSupport::Concern
+      delegate :command, :command!, :use_command, to: :commander
+    end
 
     module ClassMethods
       def redirect_map map = {}
