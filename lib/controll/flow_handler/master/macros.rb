@@ -4,12 +4,23 @@ module Controll::FlowHandler
       extend ActiveSupport::Concern
 
       module ClassMethods
-        def handler handler_type, options = {}, &block
-          unless valid_handlers.include? handler_type.to_sym
-            raise ArgumentError, "Must one of: #{valid_handlers} was: #{handler_type}"
+        def handler options = {}, &block
+          mapper_type = :simple if options[:simple]
+          mapper_type ||= :complex if options[:complex]
+
+          master_clazz = Controll::FlowHandler::Master
+
+          unless mapper_type
+            raise ArgumentError, "You must specify mapper type, one of: #{master_clazz.mapper_types} in: #{options}" 
+          end
+
+          handler_type = options[mapper_type] 
+
+          unless master_clazz.valid_handler? handler_type
+            raise ArgumentError, "Must one of: #{master_clazz.valid_handlers} was: #{handler_type}"
           end
           
-          parent = options[:parent] || "Controll::FlowHandler::#{response_type.to_s.camelize}".constantize
+          parent = "Controll::FlowHandler::ActionMapper::#{mapper_type}".constantize
 
           clazz_name = handler_type.to_s.camelize
           context = self.kind_of?(Class) ? self : self.class
@@ -26,16 +37,12 @@ module Controll::FlowHandler
           clazz
         end
 
-        def renderer options = {}, &block
-          handler :renderer, options = {}, &block
-        end
-
-        def fallback options = {}, &block
-          handler :fallback, options = {}, &block
+        def renderer mapper_type, options = {}, &block
+          handler options.merge(mapper_type => :renderer), &block
         end
 
         def redirecter options = {}, &block
-          handler :redirecter, options = {}, &block
+          handler options.merge(mapper_type => :redirecter), &block
         end
 
         def event &block
@@ -53,10 +60,6 @@ module Controll::FlowHandler
         #     instance_variable_get("@action_handlers") || instance_variable_set("@action_handlers", value)
         #   end
         # end
-
-        def valid_handlers
-          [:renderer, :redirecter, :fallback]
-        end
       end
     end
   end

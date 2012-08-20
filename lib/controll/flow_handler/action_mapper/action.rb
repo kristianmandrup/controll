@@ -1,4 +1,4 @@
-module Controll::FlowHandler
+module Controll::FlowHandler::ActionMapper
   class Action
     attr_reader :path, :controller
 
@@ -21,7 +21,7 @@ module Controll::FlowHandler
 
     def error_check!
       unless controller.respond_to? controller_action
-        raise Controll::Enabler::NotIncluded, "Controll::Enabler has not been included in #{controller.class}. Missing #{controller_action} method"
+        raise Controll::NotEnabled, "Controll::Enabler has not been included in #{controller.class}. Missing #{controller_action} method"
       end
     end
   end

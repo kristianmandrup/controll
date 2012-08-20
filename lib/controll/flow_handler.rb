@@ -2,19 +2,12 @@ require 'controll/flow_handler/errors'
 
 module Controll
   module FlowHandler
-    autoload :Action,       'controll/flow_handler/action'
-    autoload :PathAction,   'controll/flow_handler/path_action'
-    autoload :Master,       'controll/flow_handler/master'
-    autoload :Redirecter,   'controll/flow_handler/redirecter'
-    autoload :Renderer,     'controll/flow_handler/renderer'    
-    autoload :Fallback,     'controll/flow_handler/fallback'        
-    autoload :EventHelper,  'controll/flow_handler/event_helper'    
-    autoload :Mapper,       'controll/flow_handler/mapper'    
+    autoload :Master,         'controll/flow_handler/master'
+    autoload :EventMapper,    'controll/flow_handler/event_mapper'    
+    autoload :ActionMapper,   'controll/flow_handler/action_mapper'
   end
 end
 
 module FlowHandlers
-  Action      = Controll::FlowHandler::Action
-  PathAction  = Controll::FlowHandler::Action
   Master      = Controll::FlowHandler::Master
 end

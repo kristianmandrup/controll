@@ -1,4 +1,4 @@
-module Controll::FlowHandler
+module Controll::FlowHandler::ActionMapper
   class Fallback < Action
     attr_reader :controller, :event
 

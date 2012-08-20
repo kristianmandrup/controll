@@ -28,6 +28,18 @@ module Controll::FlowHandler
     class << self
       def action_handlers
         @action_handlers ||= []
+
+        def valid_handler? handler_type
+          valid_handlers.include? handler_type.to_sym
+        end
+
+        def valid_handlers
+          [:renderer, :redirecter]
+        end
+
+        def mapper_types
+          [:simple, :complex]
+        end        
       end
 
       def add_action_handler name

@@ -8,8 +8,6 @@ module Controll
 
     extend ActiveSupport::Concern
 
-    class NotIncluded < StandardError; end
-
     included do      
       include Controll::Helper::Params
       include Controll::Helper::Session

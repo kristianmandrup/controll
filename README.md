@@ -289,16 +289,17 @@ module FlowHandlers
 
     # configuration of the Renderer ActionHandler
     # will return a Renderer Action if it matches the event
-    renderer do
-      default_path :signup_services_path
-      events       :signed_in_new_user, :signed_in
+    renderer :simple do
+      events :signed_in_new_user, :signed_in do
+        signup_services_path
+      end
     end
 
     # configuration of the Redirecter ActionHandler
     # will return a Redirecter Action if it matches the event
-    redirecter do
+    redirecter :complex do
       # redirection mappings for :notice events
-      redirections :notice do
+      maps :notice do
         {        
           signup_services_path: :signed_in_new_user
           services_path:        [:signed_in_connect, :signed_in_new_connect]
@@ -307,7 +308,7 @@ module FlowHandlers
       end
 
       # redirection mappings for :error events
-      redirections :error, signin_path: [:error, :invalid, :auth_error]
+      maps :error, signin_path: [:error, :invalid, :auth_error]
     end  
   end
 end
@@ -318,6 +319,8 @@ The `#renderer` and `#redirector` macros will each create a Class of the same na
 In the `Redirecter` class we are setting up a mapping for various path, specifying which notifications/event should cause a redirect to that path.
 
 If you are rendering or redirecting to paths that take arguments, you can either extend the `#action` class method of your Redirect or Render class implementation or you can define a `#use_alternatives` method in your `FlowHandler` that contains this particular flow logic.
+
+Note: For mapping paths that take arguments, there should be an option to take a block, closure to be late-evaluated on the controller context ;)
 
 ## The Executor
 

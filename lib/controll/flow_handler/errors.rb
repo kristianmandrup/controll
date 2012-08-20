@@ -3,10 +3,10 @@ module Controll::FlowHandler
   
   class PathActionError           < StandardError; end
 
-  # Redirect
-  class NoRedirectionFoundError   < PathActionError; end
+  # Complex mapper
+  class NoMappingFoundError   < PathActionError; end
 
-  # Render
+  # Simple mapper
   class NoEventsDefinedError      < PathActionError; end
   class NoDefaultPathDefinedError < PathActionError; end
   

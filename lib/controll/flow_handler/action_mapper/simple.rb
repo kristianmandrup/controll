@@ -1,11 +1,7 @@
-module Controll::FlowHandler
-  class Renderer < PathAction
+module Controll::FlowHandler::ActionMapper
+  class Simple < PathAction
     NoEventsDefinedError      = Controll::FlowHandler::NoEventsDefinedError
     NoDefaultPathDefinedError = Controll::FlowHandler::NoDefaultPathDefinedError
-
-    def type
-      :render
-    end
 
     # TODO: Should combine with Redirecter style, allowing for multiple render path mappings!
     # This is fx useful for Wizards etc. where one Controller can render to many views, depending on state

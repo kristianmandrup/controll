@@ -36,7 +36,11 @@ module Controll::FlowHandler
       end
 
       def fallback
-        FlowHandler::Fallback.new controller, event
+        fallback_class.new controller, event
+      end
+
+      def fallback_class
+        FlowHandler::ActionMapper::Fallback
       end
 
       def action_handlers

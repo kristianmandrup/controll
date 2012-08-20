@@ -1,4 +1,4 @@
-module Controll::FlowHandler
+module Controll::FlowHandler::ActionMapper
   class PathAction < Action
     def perform
       raise BadPathError, "Bad path: #{path}" if path.blank?
