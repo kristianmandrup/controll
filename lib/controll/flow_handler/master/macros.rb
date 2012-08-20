@@ -5,8 +5,8 @@ module Controll::FlowHandler
 
       module ClassMethods
         def handler options = {}, &block
-          mapper_type = :simple if options[:simple]
-          mapper_type ||= :complex if options[:complex]
+          mapper_type = :simple if options.delete(:simple)
+          mapper_type ||= :complex if options(:complex)
 
           master_clazz = Controll::FlowHandler::Master
 
