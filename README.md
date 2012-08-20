@@ -314,13 +314,16 @@ module FlowHandlers
 end
 ```
 
-The `#renderer` and `#redirector` macros will each create a Class of the same name that inherit from Controll::FlowHandler::Redirector or Controll::FlowHandler::Renderer respectively. You can also define these classes directly yourself instead of using the macros.
+The `#renderer` and `#redirector` macros will each create a Class of the same name that inherit from Controll::FlowHandler::ActionMapper::Simple or Controll::FlowHandler::ActionMapper::Complex. 
+You can also define these classes directly yourself instead of using the macros.
+The *simple* action mapper maps a list of events to a single path and otherwise falls back.
+The complex action mapper maps the event to an event hash for each registered event type.
 
-In the `Redirecter` class we are setting up a mapping for various path, specifying which notifications/event should cause a redirect to that path.
+In the `Redirecter` class we are setting up a mapping for various paths, for each path specifying which events should cause a redirect to that path.
 
 If you are rendering or redirecting to paths that take arguments, you can either extend the `#action` class method of your Redirect or Render class implementation or you can define a `#use_alternatives` method in your `FlowHandler` that contains this particular flow logic.
 
-Note: For mapping paths that take arguments, there should be an option to take a block, closure to be late-evaluated on the controller context ;)
+Note: For mapping paths that take arguments, there should be an option to take a block (closure) to be late-evaluated on the controller context ;)
 
 ## The Executor
 
