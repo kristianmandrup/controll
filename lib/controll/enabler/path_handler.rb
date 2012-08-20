@@ -6,12 +6,6 @@ module Controll::Enabler
       @controller, @type = [controller, type]
     end
 
-    def map
-      @map ||= controller.class.send("#{type}_map") 
-    end
-
-    alias_method :control_action, :type
-
     def self.renderer controller, map
       self.new controller, map, :render
     end
@@ -27,6 +21,12 @@ module Controll::Enabler
     end
 
     protected
+
+    def map
+      @map ||= controller.class.send("#{type}_map") 
+    end
+
+    alias_method :control_action, :type
 
     def handle_path
       controller.send control_action, path, options

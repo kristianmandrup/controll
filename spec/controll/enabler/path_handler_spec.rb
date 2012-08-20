@@ -19,5 +19,6 @@ describe Controll::Enabler::PathHandler do
 
   let(:controller) { MySweetController.new }
 
-  describe '.path_for action' do
+  describe '.execute *args' do
+  end
 end

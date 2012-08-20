@@ -1,6 +1,13 @@
+require 'spec_helper'
+
+class MySweetController
+  include Controll::Enabler::Maps
+end
+
 describe Controll::Enabler::Maps do
   subject { controller.new }
-  let(:controller) { MyController }
+
+  let(:controller) { MySweetController }
 
   describe '.redirect_map {}' do
     before :all do
@@ -14,9 +21,11 @@ describe Controll::Enabler::Maps do
 
   describe '.render_map {}' do
     before :all do
-      controller.render_map :index => %w{alpha beta}
+      controller.render_map :index => %w{alpha zeta}
     end
 
-    its(:render_paths) { should == {:index => ['alpha', 'beta'] } }
+    specify do
+      controller.render_map.should == {:index => ['alpha', 'zeta'] }
+    end
   end
 end
