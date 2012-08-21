@@ -13,18 +13,18 @@ module Controll
 
       protected
 
-      # the action resulting from executing the flow_handler. 
+      # the action resulting from executing the flow. 
       # Should be an instance of either:
       # - Fallback
       # - Redirecter
       # - Renderer
       def action
-        @action ||= flow_handler.execute
+        @action ||= flow.execute
       end    
 
-      # @flowhandler ||= Controll::FlowHandler::Master.new self
-      def flow_handler
-        raise NotImplementedError, '#flow_handler must return the Controll::FlowHandler::Master instance to be used'
+      # @flowhandler ||= Controll::Flow::Master.new self
+      def flow
+        raise NotImplementedError, '#flow must return the Controll::Flow::Master instance to be used'
       end
     end
   end

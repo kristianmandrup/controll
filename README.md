@@ -96,9 +96,9 @@ class ServicesController < ApplicationController
 end
 ```
 
-A `FlowHandler` can use Executors to encapsulate execution logic, which again can execute Commands that encapsulate business logic related to the user Session or models (data).
+A `Flow` can use Executors to encapsulate execution logic, which again can execute Commands that encapsulate business logic related to the user Session or models (data).
 
-The FlowHandler takes the last event on the event stack and consults the ActionPaths registered, usually a Redirecter and Renderer. An ActionPath is a type of Action which can return a path. The FlowHandler initiates an Executor which iterates the ActionPaths to find the first one which can match the event.
+The Flow takes the last event on the event stack and consults the ActionPaths registered, usually a Redirecter and Renderer. An ActionPath is a type of Action which can return a path. The Flow initiates an Executor which iterates the ActionPaths to find the first one which can match the event.
 
 The first one with a match is returned as the Action, which the controller can then perform in order to either render or redirect.
 
@@ -117,14 +117,14 @@ Using these Controll artifacts/systems, you can avoid the typical Rails anti-pat
 The recommended approach to handle complex Controller logic using Controll:
 
 * Enable Controll on Controller
-* Configure Controller with FlowHandler, Commander and Notifier
+* Configure Controller with Flow, Commander and Notifier
 
 * Create Commands for Commander
 * Define events corresponding to commands
 * Configure Commander with Command methods
 
-* Create FlowHandler
-* Configure FlowHandler with Render and Redirect event mappings
+* Create Flow
+* Configure Flow with Render and Redirect event mappings
 
 * Create Notifier
 * Configure Notifier with Event handlers and event -> message mappings
@@ -192,7 +192,7 @@ class ServicesController < ApplicationController
   protected
 
   def create_action
-    @create_action ||= FlowHandlers::CreateService.new(self)
+    @create_action ||= Flows::CreateService.new(self)
   end
 
   fallback do |event|
@@ -217,7 +217,7 @@ class ServicesController
     extend ActiveSupport::Concern
 
     included do
-      controll :notifier, :commander, :flow_handler
+      controll :notifier, :commander, :flow
     end
 
     def fallback_action
@@ -274,12 +274,12 @@ The `Commander class extends `Imperator::Command::MethodFactory` making `#comman
 
 For how to implement the Commands themselves, see the [imperator-ext](https://github.com/kristianmandrup/imperator-ext) gem. 
 
-## FlowHandlers
+## Flows
 
-For Controller actions that require complex flow control, use a FlowHandler:
+For Controller actions that require complex flow control, use a Flow:
 
 ```ruby
-module FlowHandlers
+module Flows
   class CreateService < Master
 
     # event method that returns the event to be processed by the flow handler
@@ -314,22 +314,22 @@ module FlowHandlers
 end
 ```
 
-The `#renderer` and `#redirector` macros will each create a Class of the same name that inherit from Controll::FlowHandler::ActionMapper::Simple or Controll::FlowHandler::ActionMapper::Complex. 
+The `#renderer` and `#redirector` macros will each create a Class of the same name that inherit from Controll::Flow::ActionMapper::Simple or Controll::Flow::ActionMapper::Complex. 
 You can also define these classes directly yourself instead of using the macros.
 The *simple* action mapper maps a list of events to a single path and otherwise falls back.
 The complex action mapper maps the event to an event hash for each registered event type.
 
 In the `Redirecter` class we are setting up a mapping for various paths, for each path specifying which events should cause a redirect to that path.
 
-If you are rendering or redirecting to paths that take arguments, you can either extend the `#action` class method of your Redirect or Render class implementation or you can define a `#use_alternatives` method in your `FlowHandler` that contains this particular flow logic.
+If you are rendering or redirecting to paths that take arguments, you can either extend the `#action` class method of your Redirect or Render class implementation or you can define a `#use_alternatives` method in your `Flow` that contains this particular flow logic.
 
 Note: For mapping paths that take arguments, there should be an option to take a block (closure) to be late-evaluated on the controller context ;)
 
 ## The Executor
 
-The `Authenticator` class shown below inherits from `Executor::Notificator` which uses `#method_missing` in order to delegate any missing method back to the controller of the Executor. The FlowHandler passed in the controller. This means that calls can be executed directly on the controller, such as making notifications etc.
+The `Authenticator` class shown below inherits from `Executor::Notificator` which uses `#method_missing` in order to delegate any missing method back to the controller of the Executor. The Flow passed in the controller. This means that calls can be executed directly on the controller, such as making notifications etc.
 
-The `#result` call at the end of `#execute` ensures that the last notification event is returned, to be used for deciding what to render or where to redirect (see FlowHandler).
+The `#result` call at the end of `#execute` ensures that the last notification event is returned, to be used for deciding what to render or where to redirect (see Flow).
 
 ```ruby
 module Executors
@@ -450,12 +450,12 @@ Generate only specific controll folders
 
 * assistant
 * executor
-* flow_handler
+* flow
 * notifier
 
 Example usage:
 
-`$ rails g controll:flow_handler create_service`
+`$ rails g controll:flow create_service`
 
 Use `-h` for help on any specific controller for more usage options and info.
 

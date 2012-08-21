@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
   s.date = "2012-08-16"
-  s.description = "FlowHandler, Executor, Notifier and more, all tied together tool pack"
+  s.description = "Flow, Executor, Notifier and more, all tied together tool pack"
   s.email = "kmandrup@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE.txt",
@@ -34,15 +34,15 @@ Gem::Specification.new do |s|
     "lib/controll/executor.rb",
     "lib/controll/executor/base.rb",
     "lib/controll/executor/notificator.rb",
-    "lib/controll/flow_handler.rb",
-    "lib/controll/flow_handler/base.rb",
-    "lib/controll/flow_handler/control.rb",
-    "lib/controll/flow_handler/errors.rb",
-    "lib/controll/flow_handler/event_helper.rb",
-    "lib/controll/flow_handler/redirect.rb",
-    "lib/controll/flow_handler/redirect/action.rb",
-    "lib/controll/flow_handler/redirect/mapper.rb",
-    "lib/controll/flow_handler/render.rb",
+    "lib/controll/flow.rb",
+    "lib/controll/flow/base.rb",
+    "lib/controll/flow/control.rb",
+    "lib/controll/flow/errors.rb",
+    "lib/controll/flow/event_helper.rb",
+    "lib/controll/flow/redirect.rb",
+    "lib/controll/flow/redirect/action.rb",
+    "lib/controll/flow/redirect/mapper.rb",
+    "lib/controll/flow/render.rb",
     "lib/controll/helper.rb",
     "lib/controll/helper/event_matcher.rb",
     "lib/controll/helper/hash_access.rb",
@@ -115,11 +115,11 @@ Gem::Specification.new do |s|
     "spec/controll/command_spec.rb",
     "spec/controll/commander_spec.rb",
     "spec/controll/executor/notificator_spec.rb",
-    "spec/controll/flow_handler/control_spec.rb",
-    "spec/controll/flow_handler/redirect/action_spec.rb",
-    "spec/controll/flow_handler/redirect/mapper_spec.rb",
-    "spec/controll/flow_handler/redirect_spec.rb",
-    "spec/controll/flow_handler/render_spec.rb",
+    "spec/controll/flow/control_spec.rb",
+    "spec/controll/flow/redirect/action_spec.rb",
+    "spec/controll/flow/redirect/mapper_spec.rb",
+    "spec/controll/flow/redirect_spec.rb",
+    "spec/controll/flow/render_spec.rb",
     "spec/controll/helper/event_matcher_spec.rb",
     "spec/controll/helper/hash_access_spec.rb",
     "spec/controll/helper/notify_spec.rb",

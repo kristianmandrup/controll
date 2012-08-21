@@ -46,11 +46,11 @@ module Controll
           end
         end
 
-        def flow_handler name, options = {}
-          define_method :flow_handler do
-            unless instance_variable_get("@flow_handler")
-              clazz = "FlowHandlers::#{name.to_s.camelize}".constantize        
-              instance_variable_set "@flow_handler", clazz.new(self, options)
+        def flow name, options = {}
+          define_method :flow do
+            unless instance_variable_get("@flow")
+              clazz = "Flows::#{name.to_s.camelize}".constantize        
+              instance_variable_set "@flow", clazz.new(self, options)
             end
           end
         end

@@ -1,4 +1,4 @@
-module FlowHandlers
+module Flows
   class <%= class_name %> < <%= parent_class %>
     fallback do
       # event == :no_auth ? do_render(:text => omniauth.to_yaml) : fallback_action

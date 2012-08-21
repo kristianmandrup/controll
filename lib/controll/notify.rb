@@ -9,5 +9,6 @@ module Controll
 end
 
 module Notifiers
-  Typed = Controll::Notify::Typed
+  Typed    = Controll::Notify::Typed
+  Notifier = Controll::Notify::Typed
 end

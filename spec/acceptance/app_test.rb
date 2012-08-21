@@ -22,7 +22,7 @@ Capybara.app_host   = "http://127.0.0.1:#{FocusedController::Test.port}"
 
 describe 'acceptance test' do
   def app_root
-    TEST_ROOT + '/controll-app'
+    TEST_ROOT + '/controll_app'
   end
 
   def within_test_app

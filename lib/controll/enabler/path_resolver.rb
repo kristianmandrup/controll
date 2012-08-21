@@ -2,7 +2,7 @@ module Controll::Enabler
   class PathResolver
     attr_reader :caller, :event_map
 
-    ActionMapper = Controll::FlowHandler::ActionMapper
+    ActionMapper = Controll::Flow::ActionMapper
 
     def initialize caller, event_map
       @caller     = caller
@@ -30,7 +30,7 @@ module Controll::Enabler
       else
         resolve_event
       end      
-    rescue Controll::FlowHandler::PathActionError
+    rescue Controll::Flow::PathActionError
       nil            
     end
 
@@ -40,7 +40,7 @@ module Controll::Enabler
     end
 
     def mapper
-      @mapper ||= Controll::FlowHandler::EventMapper::Util.new main_event, event_map
+      @mapper ||= Controll::Flow::EventMapper::Util.new main_event, event_map
     end      
   end
 end

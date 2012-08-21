@@ -30,7 +30,7 @@ module Assistants
   end
 end
 
-module FlowHandlers
+module Flows
   class Services < Master
   end
 end
@@ -65,12 +65,12 @@ describe Controll::Enabler do
       its(:assistant) { should be_a Assistants::Services }
     end
 
-    describe '.flow_handler name, options = {}' do
+    describe '.flow name, options = {}' do
       before :all do
-        controller.flow_handler :services
+        controller.flow :services
       end
 
-      its(:flow_handler) { should be_a FlowHandlers::Services }
+      its(:flow) { should be_a Flows::Services }
     end
   end
 end

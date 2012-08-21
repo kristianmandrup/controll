@@ -16,7 +16,7 @@ class MySweetController
   end
 end
 
-ActionMapper = Controll::FlowHandler::ActionMapper
+ActionMapper = Controll::Flow::ActionMapper
 
 class Redirecter < ActionMapper::Complex
 end

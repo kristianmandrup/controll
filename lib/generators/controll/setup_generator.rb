@@ -30,7 +30,7 @@ module Controll
       end
 
       def valid_folders
-        %w{executors flow_handlers notifiers commanders assistants}
+        %w{executors flows notifiers commanders assistants}
       end
     end
   end
