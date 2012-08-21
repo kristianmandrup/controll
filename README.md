@@ -299,7 +299,7 @@ module FlowHandlers
     # will return a Redirecter Action if it matches the event
     redirecter :complex do
       # redirection mappings for :notice events
-      maps :notice do
+      event_map :notice do
         {        
           signup_services_path: :signed_in_new_user
           services_path:        [:signed_in_connect, :signed_in_new_connect]
@@ -308,7 +308,7 @@ module FlowHandlers
       end
 
       # redirection mappings for :error events
-      maps :error, signin_path: [:error, :invalid, :auth_error]
+      event_map :error, signin_path: [:error, :invalid, :auth_error]
     end  
   end
 end
