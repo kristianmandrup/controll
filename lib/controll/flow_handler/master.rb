@@ -16,9 +16,9 @@ module Controll::FlowHandler
     # The first ActionHandler matching the event returns an appropriate Action
     # In case no ActionHandler matches, the Fallback action is returned
     def execute
-      executor.execute || fallback
-    # rescue StandardError
-    #   fallback
+      @action = executor.execute || fallback
+      @action.set_errors errors
+      @action
     end
 
     def executor
@@ -28,6 +28,8 @@ module Controll::FlowHandler
     def executor_options
       {event: event, action_handlers: action_handlers}
     end
+
+    delegate :errors, to: :executor
 
     class << self
       def action_handlers
@@ -54,8 +56,6 @@ module Controll::FlowHandler
     end
 
     protected
-
-    attr_writer :action
 
     delegate :command!, to: :controller
 

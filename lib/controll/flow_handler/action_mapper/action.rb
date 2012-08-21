@@ -1,6 +1,6 @@
 module Controll::FlowHandler::ActionMapper
   class Action
-    attr_reader :path, :controller
+    attr_reader :path, :controller, :errors
 
     def initialize controller, path
       @controller = controller
@@ -11,6 +11,14 @@ module Controll::FlowHandler::ActionMapper
       def action controller, event
         raise NotImplementedError, 'You must implement the #action class method'
       end
+    end
+
+    def set_errors *errors
+      @errors = errors.flatten
+    end
+
+    def errors
+      @errors |= []
     end
 
     protected

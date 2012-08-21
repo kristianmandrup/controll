@@ -48,7 +48,13 @@ module FlowHandlers
   end
 end
 
+ActionMapper = Controll::FlowHandler::ActionMapper
 
+Action = ActionMapper::Action
+PathAction = ActionMapper::PathAction
+Fallback = ActionMapper::Fallback
+Simple = ActionMapper::Simple
+Complex = ActionMapper::Complex
 
 describe Controll::FlowHandler::Master do
   context 'use directly without sublclassing' do
@@ -84,12 +90,12 @@ describe Controll::FlowHandler::Master do
 
     describe '.execute' do    
       specify do
-        expect { subject.execute }.to_not raise_error(NotImplementedError)
+        expect { subject.execute }.to_not raise_error
       end
 
       # since event returns nil
       specify do
-        expect { subject.execute }.to_not raise_error
+        subject.execute.should_not be_nil
       end
     end
   end
@@ -109,7 +115,7 @@ describe Controll::FlowHandler::Master do
     describe '.execute' do    
       # since event returns nil
       specify do
-        expect { subject.execute }.to_not raise_error
+        subject.execute.should be_a Fallback
       end
     end
   end  
@@ -133,7 +139,7 @@ describe Controll::FlowHandler::Master do
       end
 
       specify do
-        subject.execute.should_not be_nil
+        subject.execute.should be_a Fallback
       end
     end
   end  
