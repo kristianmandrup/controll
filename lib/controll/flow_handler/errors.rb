@@ -1,5 +1,7 @@
 module Controll::FlowHandler
   class ActionEventError          < StandardError; end
+
+  class EventNotImplementedError  < StandardError; end
   
   class PathActionError           < StandardError; end
 

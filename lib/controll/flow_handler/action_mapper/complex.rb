@@ -4,7 +4,7 @@ module Controll::FlowHandler::ActionMapper
 
     class << self
       attr_writer :action_clazz
-      attr_reader :types
+      attr_reader :types, :event_maps
 
       # this method could be generated whenever a class inherits from ActionHandler class?
       def inherited base
@@ -13,33 +13,33 @@ module Controll::FlowHandler::ActionMapper
         end
       end
 
-      def action controller, event, maps, action_types = nil
+      def action controller, event
         action_types ||= types
-        path = path_finder(event, maps, action_types).map
+        path = path_finder(event).map
         self.new controller, path unless path.blank?
       end
 
       # reader
-      def map_for type = :notice
-        @maps ||= {}
-        @maps[type.to_sym] || {}
+      def event_map_for type = :notice
+        @event_maps ||= {}
+        event_maps[type.to_sym] || {}
       end
 
       # writer
       # also auto-adds type to types
-      def maps *args, &block
-        @maps ||= {}
-        return @maps if args.empty? && !block_given?
+      def event_map *args, &block
+        @event_maps ||= {}
+        return @event_maps if args.empty? && !block_given?
 
         type = args.first.kind_of?(Symbol) ? args.shift : :notice        
-        @maps[type.to_sym] = block_given? ? yield : args.first
+        event_maps[type.to_sym] = block_given? ? instance_eval(&block) : args.first
         @types << type unless types.include?(type)
       end 
 
       protected
 
-      def path_finder event, maps, types
-        path_finder_class.new event, maps, types
+      def path_finder event
+        path_finder_class.new event, event_maps, types
       end
 
       def path_finder_class

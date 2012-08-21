@@ -5,8 +5,8 @@ module Controll::FlowHandler
 
       module ClassMethods
         def handler options = {}, &block
-          mapper_type = :simple if options.delete(:simple)
-          mapper_type ||= :complex if options(:complex)
+          mapper_type = :simple if options[:simple]
+          mapper_type ||= :complex if options[:complex]
 
           master_clazz = Controll::FlowHandler::Master
 
@@ -14,13 +14,13 @@ module Controll::FlowHandler
             raise ArgumentError, "You must specify mapper type, one of: #{master_clazz.mapper_types} in: #{options}" 
           end
 
-          handler_type = options[mapper_type] 
+          handler_type = options.delete(mapper_type)
 
           unless master_clazz.valid_handler? handler_type
             raise ArgumentError, "Must one of: #{master_clazz.valid_handlers} was: #{handler_type}"
           end
           
-          parent = "Controll::FlowHandler::ActionMapper::#{mapper_type}".constantize
+          parent = "Controll::FlowHandler::ActionMapper::#{mapper_type.to_s.camelize}".constantize
 
           clazz_name = handler_type.to_s.camelize
           context = self.kind_of?(Class) ? self : self.class
@@ -37,11 +37,11 @@ module Controll::FlowHandler
           clazz
         end
 
-        def renderer mapper_type, options = {}, &block
+        def renderer mapper_type = :simple, options = {}, &block
           handler options.merge(mapper_type => :renderer), &block
         end
 
-        def redirecter options = {}, &block
+        def redirecter mapper_type = :complex, options = {}, &block
           handler options.merge(mapper_type => :redirecter), &block
         end
 

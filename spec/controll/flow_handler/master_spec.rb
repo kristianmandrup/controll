@@ -30,7 +30,7 @@ module FlowHandlers
       :update
     end
 
-    renderer do
+    renderer :simple do
       events :update
       default_path 'default'
     end
@@ -41,7 +41,7 @@ module FlowHandlers
       :update
     end
 
-    renderer do
+    renderer :simple do
       events :create
       default_path '/default'
     end
@@ -65,7 +65,7 @@ describe Controll::FlowHandler::Master do
 
     describe '.execute' do
       specify do
-        expect { subject.execute }.to_not raise_error
+        expect { subject.execute }.to raise_error(Controll::FlowHandler::EventNotImplementedError)
       end
     end
   end
@@ -133,8 +133,7 @@ describe Controll::FlowHandler::Master do
       end
 
       specify do
-        subject.execute
-        subject.executed?.should be_true
+        subject.execute.should_not be_nil
       end
     end
   end  

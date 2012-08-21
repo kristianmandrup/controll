@@ -10,6 +10,17 @@ module Controll::FlowHandler::ActionMapper
       controller.send(path)
     end
 
+    protected
+
+    # useful for path helpers used in event maps
+    def method_missing(method_name, *args, &block)
+      if controller.respond_to? method_name
+        controller.send method_name, *args, &block
+      else
+        super
+      end
+    end    
+
     class << self
       # do sth useful here?
       def inherited base

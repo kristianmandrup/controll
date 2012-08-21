@@ -22,30 +22,35 @@ module Controll::FlowHandler
     end
 
     def executor
-      @executor ||= Executor.new controller, event: event, action_handlers: action_handlers
+      @executor ||= Executor.new controller, executor_options
+    end
+
+    def executor_options
+      {event: event, action_handlers: action_handlers}
     end
 
     class << self
       def action_handlers
         @action_handlers ||= []
-
-        def valid_handler? handler_type
-          valid_handlers.include? handler_type.to_sym
-        end
-
-        def valid_handlers
-          [:renderer, :redirecter]
-        end
-
-        def mapper_types
-          [:simple, :complex]
-        end        
       end
 
       def add_action_handler name
         @action_handlers ||= []
         @action_handlers << name.to_s.underscore.to_sym
       end
+
+      def valid_handler? handler_type
+        raise ArgumentError, "Must be a String or Symbol, was: #{handler_type}" if handler_type.blank?
+        valid_handlers.include? handler_type.to_sym
+      end
+
+      def valid_handlers
+        [:renderer, :redirecter]
+      end
+
+      def mapper_types
+        [:simple, :complex]
+      end      
     end
 
     protected
@@ -59,7 +64,7 @@ module Controll::FlowHandler
     end
 
     def event
-      raise NotImplementedError, 'You must define an #event method that at least returns an event (Symbol). You can use an Executor for this.'
+      raise Controll::FlowHandler::EventNotImplementedError, 'You must define an #event method that returns an event (or Symbol). You can use an Executor for this.'
     end
   end
 end

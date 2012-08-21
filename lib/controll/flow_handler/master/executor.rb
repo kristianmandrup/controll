@@ -3,8 +3,8 @@ module Controll::FlowHandler
     class Executor < Controll::Executor::Base
       FlowHandler = Controll::FlowHandler
 
-      NoEventsDefinedError    = FlowHandler::NoEventsDefinedError
-      NoRedirectionFoundError = FlowHandler::NoRedirectionFoundError    
+      NoEventsDefinedError  = FlowHandler::NoEventsDefinedError
+      NoMappingFoundError   = FlowHandler::NoMappingFoundError
 
       def initialize initiator, options = {}
         super
@@ -15,10 +15,10 @@ module Controll::FlowHandler
           begin          
             action_handler_clazz = handler_class(action_handler)
             next unless action_handler_clazz
-            return action_handler_clazz.action(event)
+            return action_handler_clazz.action(controller, event)
           rescue NoEventsDefinedError => e
             errors << e
-          rescue NoRedirectionFoundError => e
+          rescue NoMappingFoundError => e
             errors << e
           end
         end
