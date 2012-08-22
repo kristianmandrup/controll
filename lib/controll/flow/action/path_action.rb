@@ -1,5 +1,5 @@
-module Controll::Flow::ActionMapper
-  class PathAction < Action
+module Controll::Flow::Action
+  class PathAction < Base
     def perform
       raise BadPathError, "Bad path: #{path}" if path.blank?
       error_check!
@@ -18,12 +18,6 @@ module Controll::Flow::ActionMapper
         controller.send method_name, *args, &block
       else
         super
-      end
-    end    
-
-    class << self
-      # do sth useful here?
-      def inherited base
       end
     end
   end

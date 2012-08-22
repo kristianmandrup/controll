@@ -43,7 +43,7 @@ module Controll::Flow
       end
 
       def fallback_class
-        Flow::ActionMapper::Fallback
+        Flow::Action::Fallback
       end
 
       def handler_class action_handler

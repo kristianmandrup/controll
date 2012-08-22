@@ -1,6 +1,6 @@
 module Controll::Flow::ActionMapper
-  class Complex < PathAction
-    attr_reader :maps
+  class Complex < Base
+    attr_reader :event_maps
 
     class << self
       attr_writer :action_clazz
@@ -16,7 +16,7 @@ module Controll::Flow::ActionMapper
       def action controller, event
         action_types ||= types
         path = path_finder(event).map
-        self.new controller, path unless path.blank?
+        path_action_class.new controller, path unless path.blank?
       end
 
       # reader

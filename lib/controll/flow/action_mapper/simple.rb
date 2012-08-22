@@ -1,5 +1,5 @@
 module Controll::Flow::ActionMapper
-  class Simple < PathAction
+  class Simple < Base
     NoEventsDefinedError      = Controll::Flow::NoEventsDefinedError
     NoDefaultPathDefinedError = Controll::Flow::NoDefaultPathDefinedError
 
@@ -15,7 +15,7 @@ module Controll::Flow::ActionMapper
       def action controller, event, path = nil
         check!
         event = normalize event
-        self.new(controller, path || default_path) if events.include? event.name
+        path_action_class.new(controller, path || default_path) if events.include? event.name
       end
 
       # http://bugs.ruby-lang.org/issues/1082

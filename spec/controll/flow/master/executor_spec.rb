@@ -28,7 +28,7 @@ describe Controll::Flow::Master::Executor do
     {event: event, action_handlers: action_handlers}
   end
 
-  describe '.initialize controller, fallback_event' do
+  describe '.initialize with fallback_event' do
     let(:event) { fallback_event }
     subject { executor.new controller, options }
 
@@ -41,7 +41,7 @@ describe Controll::Flow::Master::Executor do
     end
   end
 
-  describe '.initialize controller, render_event' do
+  describe '.initialize with render_event' do
     let(:event) { render_event }
     subject { executor.new controller, options }
 

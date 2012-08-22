@@ -49,18 +49,19 @@ module Flows
 end
 
 ActionMapper = Controll::Flow::ActionMapper
+Action = Controll::Flow::Action
 
-Action = ActionMapper::Action
-PathAction = ActionMapper::PathAction
-Fallback = ActionMapper::Fallback
+PathAction = Action::PathAction
+Fallback = Action::Fallback
+
 Simple = ActionMapper::Simple
 Complex = ActionMapper::Complex
 
 describe Controll::Flow::Master do
   context 'use directly without sublclassing' do
-    subject { flow.new controller }
+    subject             { flow.new controller }
 
-    let(:flow)  { Controll::Flow::Master }
+    let(:flow)          { Controll::Flow::Master }
     let(:controller)    { MyController::Update.new }
 
     describe '.initialize' do
@@ -77,10 +78,10 @@ describe Controll::Flow::Master do
   end
 
   context 'A Control Flow with empty #event method' do
-    subject { flow.new controller }
+    subject           { flow.new controller }
 
-    let(:flow)  { Flows::EmptyEvent }
-    let(:controller)    { MyController::Update.new }
+    let(:flow)        { Flows::EmptyEvent }
+    let(:controller)  { MyController::Update.new }
 
     describe '.initialize' do
       specify do
@@ -89,21 +90,17 @@ describe Controll::Flow::Master do
     end
 
     describe '.execute' do    
+      # since event is nil
       specify do
-        expect { subject.execute }.to_not raise_error
-      end
-
-      # since event returns nil
-      specify do
-        subject.execute.should_not be_nil
+        expect { subject.execute }.to raise_error(ArgumentError)
       end
     end
   end
 
   context 'A Control Flow where #event returns :update notice event' do
-    subject { flow.new controller }
+    subject             { flow.new controller }
 
-    let(:flow)  { Flows::UpdateEventWithoutHandler }
+    let(:flow)          { Flows::UpdateEventWithoutHandler }
     let(:controller)    { MyController::Update.new }
 
     describe '.initialize' do

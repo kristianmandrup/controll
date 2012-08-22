@@ -1,5 +1,5 @@
-module Controll::Flow::ActionMapper
-  class Fallback < Action
+module Controll::Flow::Action
+  class Fallback < Base
     attr_reader :controller, :event
 
     def initialize controller, event = nil
