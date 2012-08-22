@@ -280,7 +280,7 @@ For Controller actions that require complex flow control, use a Flow:
 
 ```ruby
 module Flows
-  class CreateService < Master
+  class CreateService < Flow
 
     # event method that returns the event to be processed by the flow handler
     event do

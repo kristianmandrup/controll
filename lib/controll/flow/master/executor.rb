@@ -6,8 +6,15 @@ module Controll::Flow
       NoEventsDefinedError  = Flow::NoEventsDefinedError
       NoMappingFoundError   = Flow::NoMappingFoundError
 
-      def initialize initiator, options = {}
+      attr_reader :event, :action_handlers
+        
+      def initialize initiator, options
+        raise ArgumentError, "Must take an options arg" unless options.kind_of?(Hash)
+        raise ArgumentError, "Must take an :event option" unless options[:event]
+        raise ArgumentError, "Must take an :action_handlers option" unless options[:action_handlers]
         super
+        @event = options[:event]
+        @action_handlers = options[:action_handlers]
       end
 
       def execute        
@@ -31,20 +38,12 @@ module Controll::Flow
 
       protected
 
-      def event
-        options[:event]
-      end
-
       def fallback
         fallback_class.new controller, event
       end
 
       def fallback_class
         Flow::ActionMapper::Fallback
-      end
-
-      def action_handlers
-        @action_handlers ||= options[:action_handlers]
       end
 
       def handler_class action_handler
