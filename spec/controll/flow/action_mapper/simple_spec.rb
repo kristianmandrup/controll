@@ -14,7 +14,7 @@ end
 
 class HelloRender < Controll::Flow::ActionMapper::Simple
   events :hello, :damn
-  set_default_path '/default'
+  default_path '/default'
 end
 
 def notification name

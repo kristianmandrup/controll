@@ -8,7 +8,7 @@ def error name
   Hashie::Mash.new(name: name.to_sym, type: :error)
 end
 
-describe Controll::Flow::Redirect::Action do
+describe Controll::Flow::EventMapper::PathFinder do
   let(:redirections) do
     { 
       :error => error_map, :notice => notice_map
@@ -29,7 +29,7 @@ describe Controll::Flow::Redirect::Action do
   let(:types) { [:notice, :error] }
 
   context 'use' do    
-    let(:clazz)       { Controll::Flow::Redirect::Action }
+    let(:clazz)       { Controll::Flow::EventMapper::PathFinder }
     let(:hello)       { notice :hello }
     let(:bad_payment) { error :bad_payment }
 

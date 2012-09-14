@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 class Notifier
-  include Controll::Helper::Notify
+  include Controll::Enabler::Notify
 end  
 
-describe Controll::Helper::Notify do
+describe Controll::Enabler::Notify do
   subject { Notifier.new }
 
   context 'initial state' do

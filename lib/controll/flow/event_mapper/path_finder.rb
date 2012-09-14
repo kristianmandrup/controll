@@ -1,5 +1,5 @@
 module Controll::Flow
-  class EventMapper
+  module EventMapper
     class PathFinder
       attr_accessor :event, :maps, :types
 
@@ -22,7 +22,7 @@ module Controll::Flow
 
       protected
 
-      include Controll::Flow::EventHelper
+      include Controll::Event::Helper
 
       def event_map
         @event_map ||= maps[event.type] || {}

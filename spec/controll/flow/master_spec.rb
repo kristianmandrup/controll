@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module MyController
+module MasterController
   class Update
     def render path
       send(path) if path
@@ -48,21 +48,21 @@ module Flows
   end
 end
 
-ActionMapper = Controll::Flow::ActionMapper
-Action = Controll::Flow::Action
+# ActionMapper = Controll::Flow::ActionMapper
+# Action = Controll::Flow::Action
 
-PathAction = Action::PathAction
-Fallback = Action::Fallback
+# PathAction = Action::PathAction
+# Fallback = Action::Fallback
 
-Simple = ActionMapper::Simple
-Complex = ActionMapper::Complex
+# Simple = ActionMapper::Simple
+# Complex = ActionMapper::Complex
 
 describe Controll::Flow::Master do
   context 'use directly without sublclassing' do
     subject             { flow.new controller }
 
     let(:flow)          { Controll::Flow::Master }
-    let(:controller)    { MyController::Update.new }
+    let(:controller)    { MasterController::Update.new }
 
     describe '.initialize' do
       specify do
@@ -81,7 +81,7 @@ describe Controll::Flow::Master do
     subject           { flow.new controller }
 
     let(:flow)        { Flows::EmptyEvent }
-    let(:controller)  { MyController::Update.new }
+    let(:controller)  { MasterController::Update.new }
 
     describe '.initialize' do
       specify do
@@ -101,7 +101,7 @@ describe Controll::Flow::Master do
     subject             { flow.new controller }
 
     let(:flow)          { Flows::UpdateEventWithoutHandler }
-    let(:controller)    { MyController::Update.new }
+    let(:controller)    { MasterController::Update.new }
 
     describe '.initialize' do
       specify do
@@ -121,7 +121,7 @@ describe Controll::Flow::Master do
     subject { flow.new controller }
 
     let(:flow)  { Flows::UpdateEvent }
-    let(:controller)    { MyController::Update.new }
+    let(:controller)    { MasterController::Update.new }
 
     describe '.initialize' do
       specify do
@@ -145,7 +145,7 @@ describe Controll::Flow::Master do
     subject { flow.new controller }
 
     let(:flow)  { Flows::UpdateEventNoMatch }
-    let(:controller)    { MyController::Update.new }
+    let(:controller)    { MasterController::Update.new }
 
     describe '.initialize' do
       specify do

@@ -8,7 +8,7 @@ def error name
   Hashie::Mash.new(name: name.to_sym, type: :error)
 end
 
-describe Controll::Flow::Redirect::Mapper do
+describe Controll::Flow::EventMapper::Util do
   let(:redirections) do
     { 
       :error => error_map, :notice => notice_map
@@ -31,7 +31,7 @@ describe Controll::Flow::Redirect::Mapper do
   context 'use' do    
     subject { clazz.new hello, notice_map }
 
-    let(:clazz)         { Controll::Flow::Redirect::Mapper }
+    let(:clazz)         { Controll::Flow::EventMapper::Util }
     let(:hello)         { notice :hello }
     let(:bad_payment)   { error :bad_payment }
 
@@ -48,7 +48,7 @@ describe Controll::Flow::Redirect::Mapper do
 
     describe '.matcher event' do
       specify do
-        subject.send(:matcher, hello).should be_a Controll::Helper::EventMatcher
+        subject.send(:matcher, hello).should be_a Controll::Event::Matcher
       end      
 
       specify do

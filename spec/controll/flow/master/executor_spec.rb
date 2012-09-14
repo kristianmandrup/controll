@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module MyController
+module MyOwnController
   class Update
     def render path
       send(path) if path
@@ -16,7 +16,7 @@ describe Controll::Flow::Master::Executor do
   include Controll::Event::Helper
 
   let(:executor)        { Controll::Flow::Master::Executor }
-  let(:controller)      { MyController::Update.new }
+  let(:controller)      { MyOwnController::Update.new }
 
   let(:fallback_event)  { create_event :unknown, :notice }
   let(:render_event)    { create_event :hello,   :notice }
