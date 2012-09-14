@@ -29,6 +29,7 @@ module Controll::Flow::ActionMapper
       # also auto-adds type to types
       def event_map *args, &block
         @event_maps ||= {}
+        @types ||= []
         return @event_maps if args.empty? && !block_given?
 
         type = args.first.kind_of?(Symbol) ? args.shift : :notice        

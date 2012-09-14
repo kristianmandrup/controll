@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-class HelloToWelcomeRedirect < Controll::Flow::Redirect
-  set_redirections :welcome => [:hello, :hi]
+class HelloToWelcomeRedirect < Controll::Flow::ActionMapper::Complex
+  event_map :welcome => [:hello, :hi]
 end
 
-class ErrorBadRedirect < Controll::Flow::Redirect  
-  set_redirections :error, bad: ['bad_payment', 'wrong_payment']
+class ErrorBadRedirect < Controll::Flow::ActionMapper::Complex  
+  event_map :error, bad: ['bad_payment', 'wrong_payment']
 end
 
 def notification name
@@ -16,19 +16,19 @@ def error name
   Hashie::Mash.new(name: name.to_sym, type: :error)
 end
 
-describe Controll::Flow::Redirect do
+describe Controll::Flow::ActionMapper::Complex do
 
   describe 'class macros' do
     before :all do
-      ErrorBadRedirect.set_redirections :error, crap: ['bad_payment', 'wrong_payment']
+      ErrorBadRedirect.event_map :error, crap: ['bad_payment', 'wrong_payment']
     end
 
     specify {
-      ErrorBadRedirect.redirections_for(:error).should == {crap: ['bad_payment', 'wrong_payment']}
+      ErrorBadRedirect.event_map_for(:error).should == {crap: ['bad_payment', 'wrong_payment']}
     }
 
     specify {
-      ErrorBadRedirect.redirections.should == {error: {crap: ['bad_payment', 'wrong_payment']} }
+      ErrorBadRedirect.event_maps.should == {error: {crap: ['bad_payment', 'wrong_payment']} }
     }
   end
 

@@ -1,18 +1,18 @@
 require 'spec_helper'
 
-class NoEventsRender < Controll::Flow::Render
+class NoEventsRender < Controll::Flow::ActionMapper::Simple
   def self.events
     []
   end
 end
 
-class HiRender < Controll::Flow::Render
+class HiRender < Controll::Flow::ActionMapper::Simple
   def self.events
     [:hi]
   end
 end
 
-class HelloRender < Controll::Flow::Render
+class HelloRender < Controll::Flow::ActionMapper::Simple
   events :hello, :damn
   set_default_path '/default'
 end
@@ -21,7 +21,7 @@ def notification name
   Hashie::Mash.new(name: name.to_sym, type: :notification)
 end
 
-describe Controll::Flow::Render do
+describe Controll::Flow::ActionMapper::Simple do
 
   context 'use directly without sublclassing' do
     subject { clazz.new '/' }

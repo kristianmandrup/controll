@@ -21,9 +21,9 @@ module Controll::Enabler
 
     def handle action
       case action
-      when ActionMapper::Fallback
+      when Action::Fallback
         nil
-      when ActionMapper::PathAction
+      when Action::PathAction
         action.resolved_path
       when Symbol, Controll::Event
         resolve_event action

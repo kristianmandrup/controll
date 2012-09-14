@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-
-class MyExec < Controll::Executor::Notificator
+class MyControlledExec < Controll::Executor::Controlled
 end
 
 class MyAwesomeController
@@ -10,8 +9,8 @@ class MyAwesomeController
   end
 end
 
-describe Controll::Executor::Notificator do
-  subject { MyExec.new controller }
+describe Controll::Executor::Controlled do
+  subject { MyControlledExec.new controller }
 
   let(:controller) { MyAwesomeController.new }
 
@@ -24,4 +23,13 @@ describe Controll::Executor::Notificator do
       expect { subject.bye }.to raise_error
     end
   end
+
+  describe '.execute' do
+  end
+
+  describe '.result' do
+  end
+
+  describe 'self.execute &block' do
+  end  
 end

@@ -6,10 +6,10 @@ class FallbackController
   end
 end
 
-class BasicFallback < Controll::Flow::Fallback
+class BasicFallbackAction < Controll::Flow::Action::Fallback
 end
 
-describe Controll::Flow::Fallback do
+describe Controll::Flow::Action::Fallback do
   context 'Basic default fallback' do
     subject { clazz.new controller, event }
 
@@ -21,7 +21,7 @@ describe Controll::Flow::Fallback do
 
     describe '.action controller, event' do
       specify do
-        clazz.action(controller, event).should be_a Controll::Flow::Fallback
+        clazz.action(controller, event).should be_a Controll::Flow::Action::Fallback
       end
     end
 

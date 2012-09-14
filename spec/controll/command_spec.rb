@@ -6,7 +6,7 @@ class NiceController
   end
 end
 
-class SignInCommand < Controll::Command
+class SignOffCommand < Controll::Command
   attribute :parent_id, String
 
   def perform
@@ -43,13 +43,13 @@ describe Controll::Command do
 
     describe '.command name, *args' do 
       specify do
-        subject.command(:sign_in).should be_a Controll::Command
+        subject.command(:sign_off).should be_a Controll::Command
       end
     end
 
     describe '.command! name, *args' do
       specify do
-        subject.command!(:sign_in).should == {id: 7, parent: 'my parent', user_id: 1 }
+        subject.command!(:sign_off).should == {id: 7, parent: 'my parent', user_id: 1 }
       end
     end
   end
