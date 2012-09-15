@@ -17,6 +17,7 @@ class MySweetController
 end
 
 ActionMapper = Controll::Flow::ActionMapper
+Action = Controll::Flow::Action
 
 class Redirecter < ActionMapper::Complex
 end
@@ -30,9 +31,9 @@ describe Controll::Enabler::PathResolver do
   let(:render_map)    { {'perfect' => [:cool, :sweet], 'home' => [:success] }}
   let(:redirect_map)  { {'inperfect' => [:cool, :sweet], 'away' => [:success] }}
 
-  let(:redirect_action) { Redirecter.new controller, redirect_path }
-  let(:render_action)   { Renderer.new controller, render_path }
-  let(:fallback_action) { ActionMapper::Fallback.new controller }
+  let(:redirect_action) { ActionMapper::Simple.action controller, redirect_path }
+  let(:render_action)   { ActionMapper::Simple.action controller, render_path }
+  let(:fallback_action) { Action::Fallback.new controller }
 
   let(:render_path) { 'perfect' }
   let(:redirect_path) { 'away' }

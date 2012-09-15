@@ -2,7 +2,8 @@ module Controll::Enabler
   class PathResolver
     attr_reader :caller, :event_map
 
-    ActionMapper = Controll::Flow::ActionMapper
+    ActionMapper  = Controll::Flow::ActionMapper
+    Action        = Controll::Flow::Action
 
     def initialize caller, event_map
       @caller     = caller

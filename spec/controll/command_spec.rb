@@ -15,7 +15,7 @@ class SignOffCommand < Controll::Command
 end
 
 class NiceCommander < Controll::Commander
-  command_method(:sign_in, name: 'kris') { {parent_id: parent_id} }
+  command_method(:sign_off, name: 'kris') { {parent_id: parent_id} }
 
   def params
     {:id => 7}
