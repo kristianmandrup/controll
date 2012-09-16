@@ -4,12 +4,12 @@ module Controll
       case event
       when Controll::Event
         event
-      when Symbol
-        create_event event, *args
+      when Symbol, String
+        create_event event.to_sym, *args
       when Hash, Hashie::Mash
         create_event event.delete(:name), event
       else
-        raise Controll::Event::InvalidError, "Event: #{event} could not be normalized, must be a Hash or Symbol"
+        raise Controll::Event::InvalidError, "Event: #{event} could not be normalized, must be a Hash, String or Symbol"
       end
     end
 

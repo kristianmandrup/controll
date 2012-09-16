@@ -15,15 +15,15 @@ describe Controll::Enabler do
   let(:controller) { MyController }
 
   context 'instance' do
-    describe 'do_redirect *args' do
+    describe 'do_redirect' do
       specify do
-        subject.do_redirect.should == nil
+        expect { subject.do_redirect }.to raise_error(ArgumentError)
       end
     end
 
-    describe 'do_render *args' do
+    describe 'do_render' do
       specify do
-        subject.do_render.should == nil
+        expect { subject.do_render }.to raise_error(ArgumentError)
       end
     end
   end

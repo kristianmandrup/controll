@@ -10,7 +10,8 @@ describe Controll::Event::Matcher do
   let(:bad_event)   { 'unknown' }
 
   describe '.initialize event' do
-    its(:event) { should == 'sign_in' }
+    its(:event) { should be_a Controll::Event }
+    its('event.name') { should == :sign_in }
   end
 
   describe '.match? events' do

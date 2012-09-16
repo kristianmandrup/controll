@@ -13,13 +13,21 @@ describe Controll::Event::Helper do
   let(:event)       { 'sign_in' }
   let(:bad_event)   { 'unknown' }
 
-  describe '.initialize event' do
-    its(:event) { should == 'sign_in' }
+  describe '.normalize event' do
+    context 'Controll::Event' do
+      specify { subject.normalize(Controll::Event.new(:x)).should be_a Controll::Event  }
+    end
+
+    context 'Symbol' do
+      specify { subject.normalize(:x).should be_a Controll::Event  }
+    end
+
+    context 'Hash' do
+      specify { subject.normalize(:name => :y).should be_a Controll::Event  }
+    end    
   end
 
-  describe '.match? events' do
-    specify { subject.match?(events).should be_true }
-
-    specify { subject.match?(bad_events).should be_false }
+  describe '.create_event' do
+    specify { subject.create_event(:x).should be_a Controll::Event }
   end
 end
