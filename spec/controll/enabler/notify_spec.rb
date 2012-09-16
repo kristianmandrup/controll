@@ -8,24 +8,14 @@ describe Controll::Enabler::Notify do
   subject { Notifier.new }
 
   context 'initial state' do
-    describe '.notifications' do
-      its(:notifications) { should be_empty }      
-    end
-
     describe '.main_event' do
-      its(:main_event) { should be_a Hashie::Mash }
+      its(:main_event) { should be_a Controll::Event }
     end
 
-    describe '.create_notification' do
-      specify { subject.send(:create_notification, :updated).should be_a Hashie::Mash }
-    end
-
-    describe '.create_event' do
-      specify { subject.send(:create_event, :updated).should be_a Hashie::Mash }
-    end
-
-    describe '.create_notice' do
-      specify { subject.send(:create_notice,:updated).should be_a Hashie::Mash }
+    Controll::Event.valid_types.each do |type|
+      describe ".create_#{type}" do
+        specify { subject.send(:"create_#{type}",:updated).should be_a Controll::Event }
+      end
     end
 
     describe '.notify' do 

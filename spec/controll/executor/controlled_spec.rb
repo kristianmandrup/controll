@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 class MyControlledExec < Controll::Executor::Controlled
+  controller_methods :hello
 end
 
 class MyAwesomeController
   def hello
     "hello"
-  end
+  end  
 end
 
 describe Controll::Executor::Controlled do

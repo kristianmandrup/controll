@@ -40,11 +40,11 @@ module Controll::Flow::ActionMapper
 
       def check!
         unless respond_to?(:events) && !events.blank?
-          raise NoEventsDefinedError, "You must define the events that can be rendered by this class" 
+          raise NoEventsDefinedError, "You must define the events/actions that can be mapped by this class" 
         end
 
         unless respond_to?(:default_path) && !default_path.blank?
-          raise NoDefaultPathDefinedError, "You must set a default_path to be rendered if no event matches"
+          raise NoDefaultPathDefinedError, "You must set a default_path to be routed to if no event/action matches"
         end
       end        
 

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-class MySweetController
+class SweetController
   include Controll::Enabler::Maps
 end
 
 describe Controll::Enabler::Maps do
   subject { controller.new }
 
-  let(:controller) { MySweetController }
+  let(:controller) { SweetController }
 
   describe '.redirect_map {}' do
     before :all do

@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 class MyDelegator < Controll::Executor::Delegator
+  controller_methods :hello
 end
 
 class MyAwesomeController
