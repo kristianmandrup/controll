@@ -459,6 +459,10 @@ Example usage:
 
 Use `-h` for help on any specific controller for more usage options and info.
 
+## Notice
+
+Due to a lot of recent API changes in order to simplify and improve usage, the README docs for the API might potentially contain a few inconsistencies with the code. Please notify me if you spot one. Thanks. See the specs and/or code in order to see the real API in this case.
+
 ## Contributing to controll
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
