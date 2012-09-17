@@ -36,23 +36,23 @@ describe Controll::Flow::EventMapper::Util do
     let(:bad_payment)   { error :bad_payment }
 
     describe '.initialize' do
-      its(:event) { should == hello }
-      its(:redirect_map) { should == notice_map }
+      its(:event) { should be_a Controll::Event }
+      its(:event_map) { should == notice_map }
     end
 
-    describe '.map' do
+    describe '.map_event' do
       specify do
-        subject.map.should == 'welcome'
+        subject.map_event.should == 'welcome'
       end
     end
 
-    describe '.matcher event' do
+    describe '.matcher' do
       specify do
-        subject.send(:matcher, hello).should be_a Controll::Event::Matcher
+        subject.send(:matcher).should be_a Controll::Event::Matcher
       end      
 
       specify do
-        subject.send(:matcher, hello).event.should == hello
+        subject.send(:matcher).event.should be_a Controll::Event
       end      
     end
 

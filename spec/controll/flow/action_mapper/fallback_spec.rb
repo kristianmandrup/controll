@@ -14,7 +14,7 @@ describe Controll::Flow::Action::Fallback do
     subject { clazz.new controller, event }
 
     let(:controller)  { FallbackController.new }
-    let(:clazz)       { BasicFallback }
+    let(:clazz)       { BasicFallbackAction }
     let(:event)       { create_event :unknown, :notice }
 
     include Controll::Event::Helper

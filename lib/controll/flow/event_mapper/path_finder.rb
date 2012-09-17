@@ -7,17 +7,17 @@ module Controll::Flow
 
       # event <Event>
       def initialize event, maps, types = []
-        raise ArgumentError, "Must take :event option, was: #{event}" if event.blank?
-        raise ArgumentError, "Must take non-empty :maps option, was: #{maps}" if maps.blank?
+        raise ArgumentError, "Event argument must not be empty" if event.blank?
+        raise ArgumentError, "Maps argument must not be empty" if maps.blank?
         @event = normalize event
         @types = types unless types.blank?
         @maps = maps
       end
 
       def path
-        @path ||= mapper(event_map).map_event 
+        @path ||= mapper.map_event 
       rescue StandardError => e
-        raise NoMappingFoundError, "No event mapping could be found for: #{event} in: #{maps}. Cause: #{e}"
+        raise NoMappingFoundError, "No event mapping could be found for: #{event.inspect} in: #{maps}. Cause: #{e}"
       end
 
       protected

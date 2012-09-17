@@ -20,23 +20,28 @@ ActionMapper = Controll::Flow::ActionMapper
 Action = Controll::Flow::Action
 
 class Redirecter < ActionMapper::Complex
+  event_map 'inperfect' => [:cool, :sweet], 'away' => [:success]
 end
 
 class Renderer < ActionMapper::Simple
+  events %w{perfect}
 end
 
 describe Controll::Enabler::PathResolver do
+  def notice name
+    Hashie::Mash.new(name: name.to_sym, type: :notice)
+  end
+
+  def error name
+    Hashie::Mash.new(name: name.to_sym, type: :error)
+  end
+
   let(:controller) { MySweetController.new }
 
   let(:render_map)    { {'perfect' => [:cool, :sweet], 'home' => [:success] }}
-  let(:redirect_map)  { {'inperfect' => [:cool, :sweet], 'away' => [:success] }}
+  let(:redirect_map)  { {'inperfect' => [:cool, :sweet], 'away' => [:success] } }
 
-  let(:redirect_action) { ActionMapper::Simple.action controller, redirect_path }
-  let(:render_action)   { ActionMapper::Simple.action controller, render_path }
   let(:fallback_action) { Action::Fallback.new controller }
-
-  let(:render_path) { 'perfect' }
-  let(:redirect_path) { 'away' }
 
   context 'initialize controller, render_map' do
     subject { Controll::Enabler::PathResolver.new controller, render_map }
@@ -56,6 +61,12 @@ describe Controll::Enabler::PathResolver do
         end
       end
 
+      describe '.resolve sweet' do
+        specify do
+          subject.resolve(:sweet).should == 'perfect'
+        end
+      end
+
       describe '.resolve :uncool' do
         specify do
           subject.resolve(:uncool).should_not == 'perfect'
@@ -69,18 +80,6 @@ describe Controll::Enabler::PathResolver do
       describe '.resolve Fallback Action' do
         specify do
           subject.resolve(fallback_action).should == nil
-        end
-      end
-
-      describe '.resolve Render Action' do
-        specify do
-          subject.resolve(render_action).should == render_path
-        end
-      end
-
-      describe '.resolve Redirect Action' do
-        specify do
-          subject.resolve(redirect_action).should == redirect_path
         end
       end
     end

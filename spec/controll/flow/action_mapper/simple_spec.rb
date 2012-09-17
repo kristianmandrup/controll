@@ -17,22 +17,29 @@ class HelloRender < Controll::Flow::ActionMapper::Simple
   default_path '/default'
 end
 
+class NiceController
+end
+
 def notification name
-  Hashie::Mash.new(name: name.to_sym, type: :notification)
+  Hashie::Mash.new(name: name.to_sym, type: :notice)
 end
 
 describe Controll::Flow::ActionMapper::Simple do
 
+  Simple  = Controll::Flow::ActionMapper::Simple
+  Complex = Controll::Flow::ActionMapper::Complex
+
+  let(:controller) { NiceController }
+  let(:hello) { notification :hello }  
+
   context 'use directly without sublclassing' do
     subject { clazz.new '/' }
 
-    let(:clazz) { Controll::Flow::Render }
-
-    let(:hello) { notification :hello }
+    let(:clazz) { Simple }
 
     describe '.action event' do
       specify do
-        expect { clazz.action(:hello) }.to raise_error(Controll::Flow::NoEventsDefinedError)
+        expect { clazz.action(controller, hello) }.to raise_error(Controll::Flow::NoEventsDefinedError)
       end
     end
   end
@@ -45,7 +52,7 @@ describe Controll::Flow::ActionMapper::Simple do
     context 'empty events' do
       describe '.action event' do
         specify do
-          expect { clazz.action(:hello) }.to raise_error(Controll::Flow::NoEventsDefinedError)
+          expect { clazz.action(controller, hello) }.to raise_error(Controll::Flow::NoEventsDefinedError)
         end
       end
     end
@@ -62,22 +69,18 @@ describe Controll::Flow::ActionMapper::Simple do
 
         describe 'does not respond to hello' do
           specify do
-            expect { clazz.action(:hello) }.to_not raise_error(Controll::Flow::Render::NoEventsDefinedError)
+            expect { clazz.action(controller, event) }.to_not raise_error(Controll::Flow::NoEventsDefinedError)
           end
 
           specify do
-            clazz.action(event).should == nil
-          end
-
-          specify do
-            clazz.action(:hello).should == nil
+            expect { clazz.action(controller, event) }.to raise_error Controll::Flow::NoDefaultPathDefinedError
           end
         end
 
         describe 'responds to hi' do
           # default_path not implemented!
           specify do
-            expect { clazz.action(:hi) }.to raise_error NotImplementedError
+            expect { clazz.action(controller, :hi) }.to raise_error Controll::Flow::NoDefaultPathDefinedError
           end
         end
       end
@@ -94,15 +97,15 @@ describe Controll::Flow::ActionMapper::Simple do
     context 'has events and default_path' do
       describe '.action event' do
         specify do
-          clazz.action(event).should be_a HelloRender
+          clazz.action(controller, event).should be_a Controll::Flow::Action::PathAction
         end        
 
         specify do
-          clazz.action(event).path.should == default_path
+          clazz.action(controller, event).path.should == default_path
         end        
 
         specify do
-          clazz.action(event, 'other_path').path.should == 'other_path'
+          clazz.action(controller, event, 'other_path').path.should == 'other_path'
         end        
       end
     end

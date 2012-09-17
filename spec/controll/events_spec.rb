@@ -6,8 +6,8 @@ describe Controll::Events do
 
   include Controll::Event::Helper
 
-  let(:a_success) { success } 
-  let(:a_warning) { warning }
+  let(:a_success) { create_event :success } 
+  let(:a_warning) { create_event :warning }
 
   describe 'class methods' do
     subject { clazz }  
@@ -16,7 +16,7 @@ describe Controll::Events do
   end
 
   describe 'last' do
-    subject { Controll::Event.new a_success, a_warning }  
+    subject { Controll::Events.new a_success, a_warning }  
 
     its(:last) { should == a_warning }
   end

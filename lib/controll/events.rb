@@ -1,11 +1,12 @@
 module Controll
   class Events
     include Enumerable
+    include Controll::Event::Helper
 
     attr_reader :events
 
-    def initialize events = []
-      @events = events.select{|event| event.kind_of? Controll::Event }
+    def initialize *events
+      @events = events.flatten.map{|event| normalize event }
     end
 
     def each

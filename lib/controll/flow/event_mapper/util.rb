@@ -32,10 +32,10 @@ module Controll::Flow
       end
 
       def valid? events
-        matcher(event).match?(events)
+        matcher.match?(events)
       end
 
-      def matcher event
+      def matcher
         @matcher ||= Controll::Event::Matcher.new event
       end        
     end

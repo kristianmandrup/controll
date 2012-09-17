@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-def notice name
-  Hashie::Mash.new(name: name.to_sym, type: :notice)
-end
-
-def error name
-  Hashie::Mash.new(name: name.to_sym, type: :error)
-end
-
 describe Controll::Flow::EventMapper::PathFinder do
+  def notice name
+    Hashie::Mash.new(name: name.to_sym, type: :notice)
+  end
+
+  def error name
+    Hashie::Mash.new(name: name.to_sym, type: :error)
+  end
+
   let(:redirections) do
     { 
       :error => error_map, :notice => notice_map
@@ -37,11 +37,11 @@ describe Controll::Flow::EventMapper::PathFinder do
       subject { clazz.new hello, redirections, types  }
 
       specify do
-        expect { subject.map }.to_not raise_error(Controll::Flow::NoRedirectionFoundError)
+        expect { subject.map }.to_not raise_error(Controll::Flow::NoMappingFoundError)
       end
 
       specify do
-        subject.map.should == 'welcome'
+        subject.path.should == 'welcome'
       end
     end
   end

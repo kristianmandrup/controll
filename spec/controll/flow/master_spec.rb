@@ -48,16 +48,9 @@ module Flows
   end
 end
 
-# ActionMapper = Controll::Flow::ActionMapper
-# Action = Controll::Flow::Action
-
-# PathAction = Action::PathAction
-# Fallback = Action::Fallback
-
-# Simple = ActionMapper::Simple
-# Complex = ActionMapper::Complex
-
 describe Controll::Flow::Master do
+  Fallback = Controll::Flow::Action::Fallback
+
   context 'use directly without sublclassing' do
     subject             { flow.new controller }
 

@@ -12,12 +12,20 @@ module Controll
       @name     = name.to_sym
       @options  = args.extract_options! 
       @type     = (extract_type(args.first) || options[:type] || :notice).to_sym
-      raise ArgumentError, "Invalid type: #{@type}" unless self.class.valid_type? @type 
+      raise ArgumentError, "Invalid type: #{@type} must be one of: #{self.class.valid_types}" unless self.class.valid_type? @type 
       @options.delete(:type) if options[:type] == @type
+    end
+
+    def self.default_valid_types
+      [:notice, :error, :warning, :success]
     end
     
     def self.valid_types
-      @valid_types ||= [:notice, :error, :warning, :success]
+      @valid_types ||= default_valid_types
+    end
+
+    def self.reset_types
+      @valid_types = default_valid_types
     end
 
     valid_types.each do |type|
@@ -41,6 +49,7 @@ module Controll
     protected
 
     def extract_type arg
+      return arg.type if arg.respond_to? :type
       arg.to_sym if type? arg
     end
 

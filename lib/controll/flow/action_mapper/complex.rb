@@ -15,7 +15,7 @@ module Controll::Flow::ActionMapper
 
       def action controller, event
         action_types ||= types
-        path = path_finder(event).map
+        path = path_finder(event).path
         path_action_class.new controller, path unless path.blank?
       end
 
@@ -40,6 +40,7 @@ module Controll::Flow::ActionMapper
       protected
 
       def path_finder event
+        raise Controll::Flow::NoMappingFoundError, "No event maps defined" if event_maps.blank?
         path_finder_class.new event, event_maps, types
       end
 

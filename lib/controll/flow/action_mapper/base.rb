@@ -2,7 +2,7 @@ module Controll::Flow::ActionMapper
   class Base
     class << self
       def path_action_class
-        Controll::Flow::PathAction
+        Controll::Flow::Action::PathAction
       end
 
       def action controller, event
