@@ -8,6 +8,21 @@ This gem is designed for Rails 3+ and currently only supports (has been tested w
 
 Enjoy :)
 
+## Install
+
+in Gemfile:
+
+```ruby
+gem 'imperator-ext'
+gem 'controll'
+```
+
+Bundle it!
+
+`$ bundle`
+
+Usage: See below, incl. the Generators section ;)
+
 ## Background
 
 This gem contains logic extracted from my [oauth_assist](https://github.com/kristianmandrup/oauth_assist) gem (and engine) which was a response to this article [oauth pure tutorial](http://www.communityguides.eu/articles/16).
