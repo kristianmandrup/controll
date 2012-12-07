@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "controll"
-  s.version = "0.3.0"
+  s.version = "0.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Kristian Mandrup"]
-  s.date = "2012-09-17"
+  s.date = "2012-12-07"
   s.description = "Flow, Executor, Notifier and more, all tied together tool pack"
   s.email = "kmandrup@gmail.com"
   s.extra_rdoc_files = [
@@ -194,6 +194,10 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<hashie>, ["~> 1.2"])
       s.add_runtime_dependency(%q<liquid>, [">= 0"])
+      s.add_runtime_dependency(%q<imperator-ext>, ["~> 0.2.0"])
+      s.add_runtime_dependency(%q<focused_controller>, [">= 0"])
+      s.add_runtime_dependency(%q<i18n>, [">= 0.6"])
+      s.add_runtime_dependency(%q<rails>, ["~> 3"])
       s.add_development_dependency(%q<rspec>, [">= 2.8.0"])
       s.add_development_dependency(%q<rdoc>, [">= 3.12"])
       s.add_development_dependency(%q<bundler>, [">= 1.0.0"])
@@ -202,6 +206,10 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<hashie>, ["~> 1.2"])
       s.add_dependency(%q<liquid>, [">= 0"])
+      s.add_dependency(%q<imperator-ext>, ["~> 0.2.0"])
+      s.add_dependency(%q<focused_controller>, [">= 0"])
+      s.add_dependency(%q<i18n>, [">= 0.6"])
+      s.add_dependency(%q<rails>, ["~> 3"])
       s.add_dependency(%q<rspec>, [">= 2.8.0"])
       s.add_dependency(%q<rdoc>, [">= 3.12"])
       s.add_dependency(%q<bundler>, [">= 1.0.0"])
@@ -211,6 +219,10 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<hashie>, ["~> 1.2"])
     s.add_dependency(%q<liquid>, [">= 0"])
+    s.add_dependency(%q<imperator-ext>, ["~> 0.2.0"])
+    s.add_dependency(%q<focused_controller>, [">= 0"])
+    s.add_dependency(%q<i18n>, [">= 0.6"])
+    s.add_dependency(%q<rails>, ["~> 3"])
     s.add_dependency(%q<rspec>, [">= 2.8.0"])
     s.add_dependency(%q<rdoc>, [">= 3.12"])
     s.add_dependency(%q<bundler>, [">= 1.0.0"])
