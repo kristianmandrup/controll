@@ -2,6 +2,7 @@ module Controll
 end
 
 require 'hashie'
+require 'singleton'
 require 'imperator-ext'
 require 'controll/errors'
 require 'controll/event'
