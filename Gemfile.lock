@@ -1,12 +1,12 @@
 GIT
   remote: git://github.com/kristianmandrup/focused_controller.git
-  revision: 729d753a62abf4eadcfd76123f643973392bec3a
+  revision: c5e69c23ef44b4f4173dbb6d99521ff70db31558
   specs:
     focused_controller (0.1.0)
-      actionpack (~> 3.0)
+      actionpack (>= 3.1)
 
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     actionmailer (3.2.12)
       actionpack (= 3.2.12)
@@ -65,12 +65,12 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.21)
-    mongoid (3.1.2)
+    mongoid (3.1.1)
       activemodel (~> 3.2)
       moped (~> 1.4.2)
       origin (~> 1.0)
       tzinfo (~> 0.3.22)
-    moped (1.4.3)
+    moped (1.4.4)
     multi_json (1.7.1)
     origin (1.0.11)
     polyglot (0.3.3)
@@ -132,7 +132,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (>= 1.1.0)
-  focused_controller!
+  focused_controller (>= 0.1.0)!
   hashie (>= 1.2)
   i18n (>= 0.6)
   imperator-ext (>= 0.2.0)

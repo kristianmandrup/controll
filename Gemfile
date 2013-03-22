@@ -1,10 +1,10 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 
 gem 'hashie', '>= 1.2'
 gem 'liquid'
 
 gem 'imperator-ext', '>= 0.2.0' #, path: '/Users/kmandrup/private/repos/imperator-ext' #, :git => 'git://github.com/kristianmandrup/imperator-ext.git'
-gem 'focused_controller', :git => 'git://github.com/kristianmandrup/focused_controller.git'
+gem 'focused_controller', '>= 0.1.0', :git => 'git://github.com/kristianmandrup/focused_controller.git'
 
 gem 'i18n', '>= 0.6'
 gem 'rails', '>= 3.1'
